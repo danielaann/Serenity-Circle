@@ -13,6 +13,7 @@ import { useThemeStore } from "./store/useThemeStore";
 import Drawer from "./components/Drawer";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
+import Relaxation from "./pages/Relaxation";
 
 const App = () =>{
   const {authUser,checkAuth, isCheckingAuth} = useAuthStore();
@@ -40,6 +41,7 @@ const App = () =>{
         <Route path="/login" element={!authUser ? <LoginPage/> : <Navigate to="/"/>}/>
         <Route path="/settings" element={authUser? <SettingsPage/> : <Navigate to="/login"/>}/>
         <Route path="/dashboard" element={authUser? <Dashboard/> : <Navigate to="/login"/>}/>
+        <Route path="/relaxation" element={authUser? <Relaxation/> : <Navigate to="/login"/>}/>
 
       </Routes>
       </Layout>
