@@ -14,6 +14,8 @@ import Drawer from "./components/Drawer";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Relaxation from "./pages/Relaxation";
+import DisplayAlbum from "./components/DisplayAlbum";
+import { useContext } from "react";
 
 const App = () =>{
   const {authUser,checkAuth, isCheckingAuth} = useAuthStore();
@@ -30,7 +32,6 @@ const App = () =>{
     </div>
   )
 
-
   return(
     <div data-theme ={theme}>
       <Layout>
@@ -42,6 +43,7 @@ const App = () =>{
         <Route path="/settings" element={authUser? <SettingsPage/> : <Navigate to="/login"/>}/>
         <Route path="/dashboard" element={authUser? <Dashboard/> : <Navigate to="/login"/>}/>
         <Route path="/relaxation" element={authUser? <Relaxation/> : <Navigate to="/login"/>}/>
+        <Route path="/album/:id" element={authUser? <DisplayAlbum/> : <Navigate to="/login"/>}/>
 
       </Routes>
       </Layout>

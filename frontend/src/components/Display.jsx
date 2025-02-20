@@ -4,15 +4,19 @@ import { songsData } from '../assets/assets';
 import { assets } from '../assets/assets';
 import AlbumItem from './AlbumItem';
 import SongItem from './SongItem';
+import { useNavigate } from 'react-router-dom';
   
   function Display() {
+
+    const navigate = useNavigate();
+
     return (<>
       <div className='w-full m-2 px-6 py-3 rounded text-secondary overflow-auto lg:w-[99%] lg:my-1.5'>
         <div className='w-full flex justify-between items-center font-semibold'>
             <div className='flex items-center gap-2'>
-                <img className='w-8 bg-primary p-2 rounded-2xl cursor-pointer' src={assets.arrow_left}/>
-                <img className='w-8 bg-primary p-2 rounded-2xl cursor-pointer' src={assets.arrow_right}/>
-                <h1 className='font-bold text-2xl'>Soundscapes</h1>
+                <img onClick={()=>navigate(-1)} className='w-8 bg-primary-content p-2 rounded-2xl cursor-pointer' src={assets.arrow_left}/>
+                <img onClick={()=>navigate(1)} className='w-8 bg-primary-content p-2 rounded-2xl cursor-pointer' src={assets.arrow_right}/>
+                <h1 className='font-bold text-3xl text-primary'>Soundscapes</h1>
             </div>
         </div>
         <div className='flex items-center gap-2 mt-3'>
