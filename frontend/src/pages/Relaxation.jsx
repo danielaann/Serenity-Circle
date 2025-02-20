@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import Player from '../components/Player';
+import Player from '../components/Music/Player';
 import Sidebar from '../components/Sidebar';
 import { useLocation } from 'react-router-dom';
-import { PlayerContext } from '../components/PlayerContext';
+import { PlayerContext } from '../components/Music/PlayerContext';
 
 function Relaxation() {
 

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom';
-import { albumsData, assets, songsData } from '../assets/assets';
+import { albumsData, assets, songsData } from '../../assets/assets';
 import { PlayerContext } from './PlayerContext';
 
 

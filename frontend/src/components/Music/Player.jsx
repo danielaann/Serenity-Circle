@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import {assets} from "../assets/assets";
-import Display from './display';
+import { assets } from "../../assets/assets";
+import Display from '../Display';
 import { PlayerContext } from './PlayerContext';
 
 function Player() {

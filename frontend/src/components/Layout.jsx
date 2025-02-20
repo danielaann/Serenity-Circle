@@ -8,6 +8,7 @@ const Layout = ({ children }) => {
     { name: 'Home', link: '/' },
     { name: 'Settings', link: '/settings' },
     { name: 'Dashboard', link: '/dashboard' },
+    { name: 'Relaxation', link: '/relaxation'},
 
   ];
 

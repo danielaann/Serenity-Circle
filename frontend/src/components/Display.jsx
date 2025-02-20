@@ -2,8 +2,8 @@ import React from 'react';
 import {albumsData} from '../assets/assets';
 import { songsData } from '../assets/assets';
 import { assets } from '../assets/assets';
-import AlbumItem from './AlbumItem';
-import SongItem from './SongItem';
+import AlbumItem from '../components/Music/AlbumItem';
+import SongItem from '../components/Music/SongItem';
 import { useNavigate } from 'react-router-dom';
   
   function Display() {

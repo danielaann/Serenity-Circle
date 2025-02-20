@@ -14,7 +14,7 @@ import Drawer from "./components/Drawer";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Relaxation from "./pages/Relaxation";
-import DisplayAlbum from "./components/DisplayAlbum";
+import DisplayAlbum from "./components/Music/DisplayAlbum";
 import { useContext } from "react";
 
 const App = () =>{
