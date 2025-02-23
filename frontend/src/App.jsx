@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Relaxation from "./pages/Relaxation";
 import DisplayAlbum from "./components/Music/DisplayAlbum";
 import { useContext } from "react";
+import ShowNotes from "./components/Notes/ShowNotes";
 
 const App = () =>{
   const {authUser,checkAuth, isCheckingAuth} = useAuthStore();
@@ -44,6 +45,7 @@ const App = () =>{
         <Route path="/dashboard" element={authUser? <Dashboard/> : <Navigate to="/login"/>}/>
         <Route path="/relaxation" element={authUser? <Relaxation/> : <Navigate to="/login"/>}/>
         <Route path="/album/:id" element={authUser? <DisplayAlbum/> : <Navigate to="/login"/>}/>
+        <Route path="/notes" element={authUser? <ShowNotes/> : <Navigate to="/login"/>}/>
 
       </Routes>
       </Layout>
