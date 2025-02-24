@@ -53,7 +53,13 @@ function ShowNotes() {
       className=" w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-36 p-5 overflow-auto"
     >
 
-    <AddEditNotes/>
+    <AddEditNotes
+      type={openAddEditModal.type}
+      noteData={openAddEditModal.data}
+      onClose={()=>{
+        setOpenAddEditModal({isShown: false, type: 'add', data: null });
+      }}
+    />
 
     </Modal>    
     </>
