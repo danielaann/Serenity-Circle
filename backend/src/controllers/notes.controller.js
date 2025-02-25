@@ -58,4 +58,78 @@ export const editNote = async (req,res) => {
         console.error("Error in editNote controller:", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};
+
+export const getNotes = async (req,res) => {
+    const user = req.user;
+
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    try {
+        const notes = await Note.find({userId: user._id}).sort({isPinned: -1});
+
+        return res.json({
+            error: false,
+            notes,
+            message: "All notes retrieved successfully!"
+        });
+
+    } catch (error) {
+        console.error("Error in getNotes controller:", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const deleteNote = async (req,res) => {
+    const noteId = req.params.noteId;
+    const user = req.user;
+
+    try {
+        const note = await Note.findOne({_id: noteId, userId: user._id});
+
+        if(!note){
+            return res.status(404).json({error:true, message:"Note not found"});
+        }
+
+        await Note.deleteOne({_id: noteId, userId: user._id});
+        return res.json({
+            error:false,
+            message:"Note deleted successfully!"
+        });
+        
+    } catch (error) {
+        console.error("Error in deleteNote controller:", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const updateNotePin = async (req,res) => {
+    const noteId = req.params.noteId;
+    const {isPinned} = req.body;
+    const user = req.user;
+    
+    if (!req.user || !req.user._id) {
+        return res.status(401).json({ error: true, message: "Unauthorized: User not found" });
+    }
+    
+
+    try {
+        const note = await Note.findOne({_id: noteId, userId: user._id});
+
+        if (!note){
+            return res.status.json({error:true, message:"Note not Found"});
+        }
+
+        if (isPinned !== undefined) note.isPinned = isPinned;
+
+        await note.save();
+
+        return res.json({error: false, note, message: "Note updated Successfully!"});
+
+    } catch (error) {
+        console.error("Error in editNote controller:", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    };
+};
