@@ -18,7 +18,7 @@ export const sendNote = async (req, res) => {
 
         await note.save();
 
-        res.status(201).json(note);
+        res.status(201).json({note});
     } catch (error) {
         console.error("Error in sendNote controller:", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
