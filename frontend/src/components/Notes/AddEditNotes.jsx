@@ -3,18 +3,16 @@ import TagInput from './TagInput';
 import { X } from 'lucide-react';
 import {axiosInstance} from '../../lib/axios';
 
-const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
+const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMessage }) => {
 
-    const [title,setTitle]=useState("");
-    const [content, setContent] = useState("");
-    const [tags, setTags] = useState([]);
+    const [title,setTitle]=useState(noteData?.title || "");
+    const [content, setContent] = useState(noteData?.content ||"");
+    const [tags, setTags] = useState(noteData?.tags ||[]);
 
     const [error, setError]=useState(null);
 
     //To add new note
     const addNewNote = async () => {
-      console.log("addNewNote function called"); // Step 1: Check if function is called
-  
       try {
           const response = await axiosInstance.post('/notes/add-note', {
               title,
@@ -22,13 +20,9 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
               tags
           });
   
-          console.log("API call successful", response.data); // Step 2: Check if API call is successful
-  
           if (response.data && response.data.note) {
-              console.log("getAllNotes about to be called"); // Step 3: Check if getAllNotes runs
+              showToastMessage("Note Added Successfully");
               await getAllNotes();
-  
-              console.log("Closing modal now..."); // Step 4: Ensure onClose() runs
               onClose(); // This should close the modal
           } else {
               console.log("No note data received");
@@ -42,9 +36,28 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
 
     //To edit existing note
     const editNote = async()=>{
-        
+        const noteId = noteData._id;
+        try {
+            const response = await axiosInstance.put('/notes/edit-note/' + noteId, {
+                title,
+                content,
+                tags
+            });
+    
+            if (response.data && response.data.note) {
+                showToastMessage("Note Updated Successfully");
+                await getAllNotes();
+                onClose(); // This should close the modal
+            } else {
+                console.log("No note data received");
+            }
+        } catch (error) {
+            console.error("API call failed:", error);
+            setError(error.response?.data?.message || "An error occurred. Please try again.");
+        }
     };
 
+    
     const handleAddNote = () =>{
         if(!title){
             setError("Please enter the Title");
@@ -105,15 +118,15 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
         {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}
 
         <button 
-    type="button" 
-    onClick={() => {
-        console.log("Add button clicked"); // Step 1: Check if button click is registered
-        handleAddNote();
-    }} 
-    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm mt-3 px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
->
-    Add It
-</button>
+            type="button" 
+            onClick={() => {
+                console.log("Add button clicked"); // Step 1: Check if button click is registered
+                handleAddNote();
+            }} 
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm mt-3 px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+            {type==="add"?"Add it":"Update"}
+        </button>
 
     </div>
   )

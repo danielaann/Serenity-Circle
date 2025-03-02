@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 import AddEditNotes from './AddEditNotes';
 import Modal from "react-modal";
 import { axiosInstance } from "../../lib/axios";
+import NoteToast from './noteToast';
 
 function ShowNotes() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -13,12 +14,38 @@ function ShowNotes() {
     data: null,
   });
 
+  const [showToastMsg, setShowToastMsg]=useState({
+    isShown: false,
+    type: "add",
+    message: "",
+  });
+
+  const showToastMessage = (message , type) =>{
+    setShowToastMsg({
+      isShown:true,
+      message,
+      type
+    })
+  };
+
+  const handleCloseToast = () =>{
+    setShowToastMsg({
+      isShown:false,
+      message: ""
+    })
+  };
+
   const closeModal = () => {
     console.log("Closing modal in parent component");
     setOpenAddEditModal((prev) => ({ ...prev, isShown: false })); // Ensure re-render
   };
 
   const [allNotes, setAllNotes] = useState([]);
+
+  // Function to handle note edit
+  const handleEdit = (noteDetails) =>{
+    setOpenAddEditModal({isShown:true, data: noteDetails, type:"edit"});
+  };
 
   // Function to fetch all notes
   const getAllNotes = async () => {
@@ -31,6 +58,25 @@ function ShowNotes() {
       console.error("Error fetching notes:", error.response?.data || error.message);
     }
   };
+
+  // Function to delete note
+  const deleteNote = async (data) =>{
+    const noteId = data._id;
+    try {
+        const response = await axiosInstance.delete('/notes/delete-note/' + noteId);
+
+        if (response.data && !response.data.error) {
+            showToastMessage("Note Deleted Successfully","delete");
+            await getAllNotes();
+        } else {
+            console.log("No note data received");
+        }
+    } catch (error) {
+        console.error("API call failed:", error);
+        setError(error.response?.data?.message || "An error occurred. Please try again.");
+    }
+  }
+
 
   // Fetch notes on component mount & when modal closes
   useEffect(() => {
@@ -52,14 +98,16 @@ function ShowNotes() {
                 content={item.content}
                 tags={item.tags}
                 isPinned={item.isPinned}
-                onEdit={() => console.log(`Editing note ${item._id}`)}
-                onDelete={() => console.log(`Deleting note ${item._id}`)}
+                onEdit={() => handleEdit(item)}
+                onDelete={()=> deleteNote(item)}
                 onPinNote={() => console.log(`Toggling pin for ${item._id}`)}
               />
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 mt-8">No notes available. Click the + button to add one!</p>
+          <div>
+            <p className="text-center text-gray-500 mt-8">No notes available. Click the + button to add one!</p>
+          </div>
         )}
       </div>
 
@@ -87,9 +135,17 @@ function ShowNotes() {
               noteData={openAddEditModal.data}
               onClose={closeModal} 
               getAllNotes={getAllNotes}
+              showToastMessage={showToastMessage}
           />
         )}
       </Modal>
+
+      <NoteToast
+        isShown={showToastMsg.isShown}
+        message={showToastMsg.message}
+        type={showToastMsg.type}
+        onClose={handleCloseToast}
+      />
     </>
   );
 }
