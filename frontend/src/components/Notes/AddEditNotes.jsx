@@ -31,9 +31,8 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMessage }
           console.error("API call failed:", error);
           setError(error.response?.data?.message || "An error occurred. Please try again.");
       }
-  };
+    };
   
-
     //To edit existing note
     const editNote = async()=>{
         const noteId = noteData._id;
@@ -56,7 +55,6 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMessage }
             setError(error.response?.data?.message || "An error occurred. Please try again.");
         }
     };
-
     
     const handleAddNote = () =>{
         if(!title){
@@ -76,7 +74,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMessage }
         }else{
             addNewNote()
         }
-    }
+    };
 
   return (
     <div className='relative'>

@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import Searchbar from './Searchbar';
 
-function TopNav() {
+function TopNav ({onSearchNote, handleClearSearch}){
     const [searchQuery, setSearchQuery] = useState("");
 
-    const handleSearch=()=>{}
+    const handleSearch=()=>{
+        if(searchQuery){
+            onSearchNote(searchQuery);
+        }
+    }
 
     const onClearSearch =() =>{
         setSearchQuery("");
+        handleClearSearch();
     }
 
   return (

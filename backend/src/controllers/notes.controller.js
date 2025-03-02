@@ -133,3 +133,31 @@ export const updateNotePin = async (req,res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     };
 };
+
+export const searchNote = async (req,res) => {
+    const user = req.user;
+    const { query } = req.query;
+
+    if(!query){
+        return res.status(400).json({ error: true, message:"search query is required"});
+    }
+
+    try {
+        const matchingNotes = await Note.find({
+            userId: user._id,
+            $or:[{title: {$regex: new RegExp(query,"i")}},
+                {content: {$regex: new RegExp(query,"i")}},
+            ],
+        });
+
+        return res.json({
+            error: false,
+            notes: matchingNotes,
+            message: "Nots matching the search query retrived successfully!"
+        });
+
+    } catch (error) {
+        console.error("Error in searchNote controller:", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};

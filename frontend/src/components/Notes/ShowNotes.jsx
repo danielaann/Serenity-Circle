@@ -14,23 +14,26 @@ function ShowNotes() {
     data: null,
   });
 
-  const [showToastMsg, setShowToastMsg]=useState({
+  const [isSearch, setIsSearch] = useState(false);
+  const [allNotes, setAllNotes] = useState([]);
+
+  const [showToastMsg, setShowToastMsg] = useState({
     isShown: false,
     type: "add",
     message: "",
   });
 
-  const showToastMessage = (message , type) =>{
+  const showToastMessage = (message, type) => {
     setShowToastMsg({
-      isShown:true,
+      isShown: true,
       message,
       type
     })
   };
 
-  const handleCloseToast = () =>{
+  const handleCloseToast = () => {
     setShowToastMsg({
-      isShown:false,
+      isShown: false,
       message: ""
     })
   };
@@ -40,11 +43,14 @@ function ShowNotes() {
     setOpenAddEditModal((prev) => ({ ...prev, isShown: false })); // Ensure re-render
   };
 
-  const [allNotes, setAllNotes] = useState([]);
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  }
 
   // Function to handle note edit
-  const handleEdit = (noteDetails) =>{
-    setOpenAddEditModal({isShown:true, data: noteDetails, type:"edit"});
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({ isShown: true, data: noteDetails, type: "edit" });
   };
 
   // Function to fetch all notes
@@ -60,23 +66,74 @@ function ShowNotes() {
   };
 
   // Function to delete note
-  const deleteNote = async (data) =>{
+  const deleteNote = async (data) => {
     const noteId = data._id;
     try {
-        const response = await axiosInstance.delete('/notes/delete-note/' + noteId);
+      const response = await axiosInstance.delete('/notes/delete-note/' + noteId);
 
-        if (response.data && !response.data.error) {
-            showToastMessage("Note Deleted Successfully","delete");
-            await getAllNotes();
-        } else {
-            console.log("No note data received");
-        }
+      if (response.data && !response.data.error) {
+        showToastMessage("Note Deleted Successfully", "delete");
+        await getAllNotes();
+      } else {
+        console.log("No note data received");
+      }
     } catch (error) {
-        console.error("API call failed:", error);
-        setError(error.response?.data?.message || "An error occurred. Please try again.");
+      console.error("API call failed:", error);
+      setError(error.response?.data?.message || "An error occurred. Please try again.");
     }
-  }
+  };
 
+  //Function to Search Note
+  const onSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/notes/search-note", {
+        params: { query },
+      });
+
+      if (response.data && !response.data.error) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      } else {
+        console.log("No note data received");
+      }
+    } catch (error) {
+
+    }
+  };
+
+  const updateIsPinned = async (noteData) => {
+    const noteId = noteData._id;
+
+  // Optimistic UI update
+  setAllNotes((prevNotes) =>
+    prevNotes.map((note) =>
+      note._id === noteId ? { ...note, isPinned: !note.isPinned } : note
+    )
+  );
+
+  try {
+    const response = await axiosInstance.put(`/notes/update-note-pinned/${noteId}`, {
+      isPinned: !noteData.isPinned,
+    });
+
+    if (response.data && response.data.note) {
+      showToastMessage("Note Updated Successfully", "update");
+      await getAllNotes(); 
+    } else {
+      console.log("No note data received");
+    }
+  } catch (error) {
+    console.error("Note Pin failed:", error);
+    showToastMessage("Failed to update note", "error");
+
+    // Rollback UI change if API call fails
+    setAllNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note._id === noteId ? { ...note, isPinned: noteData.isPinned } : note
+      )
+    );
+  }
+  }
 
   // Fetch notes on component mount & when modal closes
   useEffect(() => {
@@ -85,7 +142,7 @@ function ShowNotes() {
 
   return (
     <>
-      <TopNav />
+      <TopNav onSearchNote={onSearchNote} handleClearSearch={handleClearSearch} />
 
       <div className="container mx-auto">
         {allNotes.length > 0 ? (
@@ -99,8 +156,8 @@ function ShowNotes() {
                 tags={item.tags}
                 isPinned={item.isPinned}
                 onEdit={() => handleEdit(item)}
-                onDelete={()=> deleteNote(item)}
-                onPinNote={() => console.log(`Toggling pin for ${item._id}`)}
+                onDelete={() => deleteNote(item)}
+                onPinNote={() =>updateIsPinned(item)}
               />
             ))}
           </div>
@@ -131,11 +188,11 @@ function ShowNotes() {
       >
         {openAddEditModal.isShown && (
           <AddEditNotes
-              type={openAddEditModal.type}
-              noteData={openAddEditModal.data}
-              onClose={closeModal} 
-              getAllNotes={getAllNotes}
-              showToastMessage={showToastMessage}
+            type={openAddEditModal.type}
+            noteData={openAddEditModal.data}
+            onClose={closeModal}
+            getAllNotes={getAllNotes}
+            showToastMessage={showToastMessage}
           />
         )}
       </Modal>

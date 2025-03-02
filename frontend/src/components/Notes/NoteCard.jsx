@@ -21,7 +21,7 @@ const NoteCard = ({
 
                 </div>
 
-                <Pin className={`icon-btn ${isPinned ? 'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
+                <Pin className={`cursor-pointer transition-colors duration-200 ${isPinned ? 'text-blue-500' : 'text-slate-300'}`} onClick={onPinNote}  />
 
             </div>
 
@@ -37,7 +37,6 @@ const NoteCard = ({
                 </div>
             </div>
         </div>
-
     )
 }
 
