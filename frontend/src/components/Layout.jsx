@@ -10,6 +10,7 @@ const Layout = ({ children }) => {
     { name: 'Dashboard', link: '/dashboard' },
     { name: 'Relaxation', link: '/relaxation'},
     { name: 'Journal', link: '/notes'},
+    { name: 'Task Manager', link: '/tasks'},
   ];
 
   const {authUser} = useAuthStore();
