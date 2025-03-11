@@ -3,7 +3,7 @@ import RadioChart from './RadioChart';
 
 const TaskSidebar = () => {
   return (
-    <div className='right-0 top-0 w-[15rem] bg-secondary rounded-[0.3rem] mx-3 p-2'>
+    <div className='right-0 top-0 w-[15rem] bg-base-200 rounded-[0.3rem] mx-3 p-2'>
       <div className='px-2 py-4 mt-1 flex items-center rounded-[0.8rem] border-2 transition duration-300 ease-in-out cursor-pointer border-transparent hover:border-2 hover:border-white'>
         {/* carasol of motivation */}
       </div>

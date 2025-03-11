@@ -9,7 +9,7 @@ const chartData = {
   datasets: [
     {
       data: [1260, 570],
-      backgroundColor: ["#11EE59","#F90623"],
+      backgroundColor: ["#50C878","#E74C3C"],
       hoverBackgroundColor: ["#40F27A", "#FA384F"],
     },
   ],

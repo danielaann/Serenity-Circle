@@ -27,7 +27,7 @@ const MiniSidebar = () => {
     ]
 
   return (
-    <div className='basis-[3rem] flex flex-col bg-secondary rounded-[0.3rem] mx-2'>
+    <div className='basis-[3rem] flex flex-col bg-base rounded-[0.3rem] mx-1'>
         <div className='mt-10 flex-1 flex flex-col items-center justify-between'>
             <ul className='flex flex-col gap-10'>
                 {navItems.map((item,index)=>(

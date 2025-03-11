@@ -3,7 +3,7 @@ import React from "react";
 const Drawer = ({ title = "App Title", menuItems = [] }) => {
   return (
     <aside
-      className="fixed top-16 left-0 h-[calc(100vh-4rem)] bg-base-200 w-56 p-4 shadow-lg overflow-y-auto"
+      className="fixed top-16 left-0 h-[calc(100vh-4rem)] bg-primary w-56 p-4 shadow-lg overflow-y-auto"
       style={{ zIndex: 1000 }} // Ensure drawer stays above other content
     >
       {/* App Title */}
