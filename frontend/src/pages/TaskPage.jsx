@@ -9,7 +9,7 @@ import Pending from '../components/Task/Pending';
 import Overdue from '../components/Task/Overdue';
 
 const TaskPage = () => {
-  return (
+  return (<>
     <div className='container h-[89vh] flex overflow-hidden m-2'>
         <MiniSidebar/>
         <div className="flex flex-1">
@@ -25,6 +25,7 @@ const TaskPage = () => {
           <TaskSidebar className="w-[15rem]" />
       </div>
     </div>
+    </>
   )
 }
 

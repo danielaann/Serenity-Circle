@@ -111,6 +111,7 @@ function ShowNotes() {
     )
   );
 
+  //Pin-notes API call
   try {
     const response = await axiosInstance.put(`/notes/update-note-pinned/${noteId}`, {
       isPinned: !noteData.isPinned,

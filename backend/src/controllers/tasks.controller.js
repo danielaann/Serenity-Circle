@@ -2,18 +2,18 @@ import asyncHandler from "express-async-handler";
 import TaskModel from "../models/task.model.js";
 
 // Create a new task
-export const createTask = asyncHandler(async (req,res) => {
+export const createTask = asyncHandler(async (req, res) => {
     try {
-        const {title,description,dueDate,status,priority} = req.body;
+        const { title, description, dueDate, status, priority } = req.body;
 
-        if(!title || title.trim() === ""){
-            res.status(400).json({message: "Please provide a title"});
-        };
+        if (!title || title.trim() === "") {
+            return res.status(400).json({ message: "Please provide a title" });
+        }
 
-        if (!description || description.trim() === ""){
-            res.status(400).json({message: "Please provide a description"});
-        };
-        
+        if (!description || description.trim() === "") {
+            return res.status(400).json({ message: "Please provide a description" });
+        }
+
         const task = new TaskModel({
             title,
             description,
@@ -24,7 +24,7 @@ export const createTask = asyncHandler(async (req,res) => {
         });
 
         await task.save();
-        res.status(201).json({message: "Task created", task});
+        return res.status(201).json({ message: "Task created", task });
 
     } catch (error) {
         console.error("Error in createTask controller:", error.message);
