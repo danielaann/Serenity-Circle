@@ -60,6 +60,7 @@ const MainTask = () => {
       const response = await axiosInstance.put(`/tasks/update-task/${task._id}`, task);
       const updatedTask = response.data.task;
       setTasks((prevTasks) => prevTasks.map((tsk) => (tsk._id === updatedTask._id ? updatedTask : tsk)));
+      toast.success("Task updated successfully");
     } catch (error) {
       console.log("Error in updating Task:", error);
     }
@@ -96,11 +97,33 @@ const MainTask = () => {
     try {
       await axiosInstance.delete(`/tasks/delete-task/${taskId}`);
       setTasks((prev) => prev.filter((tsk) => tsk._id !== taskId));
+      toast.success("Task deleted successfully");
     } catch (error) {
       console.log("Error in deleting Task:", error);
     }
     setLoading(false);
   };
+
+  const toggleTaskCompletion = async (taskId, completed) => {
+    setLoading(true);
+    try {
+        const response = await axiosInstance.put(`/tasks/toggle-complete/${taskId}`);
+        const updatedTask = response.data.task;
+
+        // Update the task list with the new status
+        setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+                task._id === updatedTask._id ? updatedTask : task
+            )
+        );
+        toast.success("Task status updated");
+    } catch (error) {
+        console.log("Error updating task completion:", error);
+        toast.error("Failed to update task status");
+    }
+    setLoading(false);
+};
+  
 
   useEffect(() => {
     getTasks();
@@ -128,7 +151,12 @@ const MainTask = () => {
         <div className='m-6 pb-[2rem] mt-6 grid grid-cols-3 gap-[1.5rem]'>
           {Array.isArray(tasks) && tasks.length > 0 ? (
             tasks.map((task) => (
-              <TaskItem key={task._id} task={task} onEdit={() => getTask(task._id)} onDelete={() => deleteTask(task._id)} />
+              <TaskItem 
+              key={task._id} 
+              task={task} 
+              onComplete={() => toggleTaskCompletion(task._id, task.completed)}
+              onEdit={() => getTask(task._id)} 
+              onDelete={() => deleteTask(task._id)} />
             ))
           ) : (
             <p className="text-center col-span-full">No tasks available</p>

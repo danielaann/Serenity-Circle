@@ -130,3 +130,25 @@ export const deleteTask = asyncHandler(async (req,res) => {
     }
 });
 
+// Update task completion status
+export const completeTask = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.params;
+
+        // Find task by ID
+        const task = await TaskModel.findById(taskId);  // Use TaskModel instead of Task
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        // Toggle the 'completed' field
+        task.completed = !task.completed;
+        await task.save();
+
+        return res.status(200).json({ message: "Task status updated", task });
+    } catch (error) {
+        console.error("Error updating task completion:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+

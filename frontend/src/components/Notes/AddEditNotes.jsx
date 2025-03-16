@@ -118,7 +118,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose, showToastMessage }
         <button 
             type="button" 
             onClick={() => {
-                console.log("Add button clicked"); // Step 1: Check if button click is registered
+                console.log("Add button clicked"); 
                 handleAddNote();
             }} 
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm mt-3 px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

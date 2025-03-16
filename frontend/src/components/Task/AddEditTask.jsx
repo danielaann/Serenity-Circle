@@ -8,7 +8,6 @@ const AddEditTask = ({ task, setTask, handleSubmit, closeModal }) => {
     }));
   };
 
-  
 
   return (
     <div className='fixed inset-0 z-50 flex justify-center items-center bg-[#333]/30'>
@@ -64,7 +63,7 @@ const AddEditTask = ({ task, setTask, handleSubmit, closeModal }) => {
             type='date' 
             name='dueDate'
             id='dueDate' 
-            value={task.dueDate}
+            value={task.dueDate ? task.dueDate.split("T")[0] : ""}
             onChange={handleInput('dueDate')}
             className='bg-[#F9F9F9] border rounded-md p-2'
           />
@@ -73,9 +72,7 @@ const AddEditTask = ({ task, setTask, handleSubmit, closeModal }) => {
         <div className="flex gap-3 mt-4">
           <button type="submit" onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded-md">Save</button>
           <button type="button" onClick={closeModal} className="bg-gray-400 text-white px-4 py-2 rounded-md">Cancel</button>
-          <button type='button' onClick={handleInput('completed')} className='bg-green-500 text-white px-4 py-2 rounded-md'>
-            {task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-          </button>
+
         </div>
       </form>
     </div>
