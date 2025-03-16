@@ -5,6 +5,7 @@ import Filters from './Filters';
 import TaskItem from './TaskItem';
 import AddEditTask from './AddEditTask';
 import toast from 'react-hot-toast';
+import TaskSidebar from './TaskSidebar';
 
 const MainTask = () => {
   const [tasks, setTasks] = useState([]);
@@ -142,34 +143,46 @@ const MainTask = () => {
 
       {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
-      <div className='flex-1 h-full bg-base-100 border border-base-200 overflow-auto rounded-[0.3rem]'>
-        <div className='m-6 flex justify-between'>
-          <h1 className='text-3xl font-bold mt-1'>All Tasks</h1>
-          <Filters setPriority={setPriority} priority={priority} />
+      {/* Main container with flex row */}
+      <div className='flex h-full bg-base-100 border border-base-200 overflow-auto rounded-[0.3rem] p-6 gap-6'>
+
+        {/* Left Section - Tasks */}
+        <div className='flex-1'>
+          <div className='flex justify-between mb-4'>
+            <h1 className='text-3xl font-bold'>All Tasks</h1>
+            <Filters setPriority={setPriority} priority={priority} />
+          </div>
+
+          {/* Task Grid */}
+          <div className='grid grid-cols-3 gap-[1.5rem]'>
+            {Array.isArray(tasks) && tasks.length > 0 ? (
+              tasks.map((task) => (
+                <TaskItem 
+                  key={task._id} 
+                  task={task} 
+                  onComplete={() => toggleTaskCompletion(task._id, task.completed)}
+                  onEdit={() => getTask(task._id)} 
+                  onDelete={() => deleteTask(task._id)} />
+              ))
+            ) : (
+              <p className="text-center col-span-full">No tasks available</p>
+            )}
+
+            <button 
+              className='h-[7rem] w-full py-2 rounded-md text-lg font-medium text-gray-500 border-dashed border-4 border-grey-400 
+              hover:bg-gray-300 hover:border-none transition duration-200 ease-in-out'
+              onClick={() => setShowModal(true)}
+            >
+              Add New Task
+            </button>
+          </div>
         </div>
 
-        <div className='m-6 pb-[2rem] mt-6 grid grid-cols-3 gap-[1.5rem]'>
-          {Array.isArray(tasks) && tasks.length > 0 ? (
-            tasks.map((task) => (
-              <TaskItem 
-              key={task._id} 
-              task={task} 
-              onComplete={() => toggleTaskCompletion(task._id, task.completed)}
-              onEdit={() => getTask(task._id)} 
-              onDelete={() => deleteTask(task._id)} />
-            ))
-          ) : (
-            <p className="text-center col-span-full">No tasks available</p>
-          )}
-
-          <button 
-            className='h-[7rem] w-full py-2 rounded-md text-lg font-medium text-gray-500 border-dashed border-4 border-grey-400 
-            hover:bg-gray-300 hover:border-none transition duration-200 ease-in-out'
-            onClick={() => setShowModal(true)}
-          >
-            Add New Task
-          </button>
+        {/* Right Section - Task Sidebar */}
+        <div className="w-[15rem]">  
+          <TaskSidebar tasks={tasks} loading={loading} />
         </div>
+
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import MiniSidebar from '../components/Task/MiniSidebar';
 import TaskHeader from '../components/Task/TaskHeader';
 import MainTask from '../components/Task/MainTask';
@@ -7,13 +7,16 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Completed from '../components/Task/Completed';
 import Pending from '../components/Task/Pending';
 import Overdue from '../components/Task/Overdue';
+import { axiosInstance } from '../lib/axios';
 
 const TaskPage = () => {
-  return (<>
-    <div className='container h-[89vh] flex overflow-hidden m-2'>
-        <MiniSidebar/>
+
+  return (
+    <>
+      <div className='container h-[89vh] flex overflow-hidden m-2'>
+        <MiniSidebar />
         <div className="flex flex-1">
-          <div className="flex-1">
+          <div className="w-[100%]">
             <Routes>
               <Route path="/" element={<MainTask taskType="all" />} />
               <Route path="completed" element={<Completed taskType="completed" />} />
@@ -22,11 +25,10 @@ const TaskPage = () => {
               <Route path="*" element={<Navigate to="/tasks" />} />
             </Routes>
           </div>
-          <TaskSidebar className="w-[15rem]" />
+        </div>
       </div>
-    </div>
     </>
-  )
-}
+  );
+};
 
 export default TaskPage;

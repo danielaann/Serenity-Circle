@@ -143,6 +143,10 @@ export const completeTask = asyncHandler(async (req, res) => {
 
         // Toggle the 'completed' field
         task.completed = !task.completed;
+
+        if(task.completed){
+            task.status = "inactive";
+        }
         await task.save();
 
         return res.status(200).json({ message: "Task status updated", task });
