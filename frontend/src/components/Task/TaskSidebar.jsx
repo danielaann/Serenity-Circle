@@ -24,15 +24,29 @@ const TaskSidebar = ({ tasks, loading }) => {
             <p>In Progress:</p>
             <p className='pl-3 relative flex gap-3'>
               <span className='absolute h-[70%] w-[0.3rem] lesft-[1px] top-1/2 translate-y-[-50%] bg-[#3AAFAE] rounded-[5px]'></span>
-              <span className='ml-4 text-font-medium text-4xl text-[#333]'>{tasks.filter(task => task.status === 'active').length}</span>
+              <span className='ml-4 text-font-medium text-4xl text-[#333]'>{tasks.filter(task => !task.completed).length}</span>
             </p>
           </div>
 
           <div className='text-grey-400'>
-            <p>Pending:</p>
+            <p>Overdue:</p>
             <p className='pl-3 relative flex gap-3'>
               <span className='absolute h-[70%] w-[0.3rem] lesft-[1px] top-1/2 translate-y-[-50%] bg-orange-400 rounded-[5px]'></span>
-              <span className='ml-4 text-font-medium text-4xl text-[#333]'>{tasks.filter(task => !task.completed).length}</span>
+              <span className='ml-4 text-font-medium text-4xl text-[#333]'>
+                {
+                  tasks.filter(task => {
+                    if (!task.dueDate) return false; // Ignore tasks without due date
+
+                    const currentDate = new Date();
+                    currentDate.setHours(0, 0, 0, 0);
+
+                    const taskDueDate = new Date(task.dueDate);
+                    taskDueDate.setHours(0, 0, 0, 0);
+
+                    return taskDueDate < currentDate && !task.completed; // Count overdue and incomplete tasks
+                  }).length
+                }
+              </span>
             </p>
           </div>
 

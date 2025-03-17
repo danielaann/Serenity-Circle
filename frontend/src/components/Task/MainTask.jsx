@@ -105,26 +105,44 @@ const MainTask = () => {
     setLoading(false);
   };
 
+  // Toggle task completion status
   const toggleTaskCompletion = async (taskId, completed) => {
     setLoading(true);
     try {
-        const response = await axiosInstance.put(`/tasks/toggle-complete/${taskId}`);
-        const updatedTask = response.data.task;
+      const response = await axiosInstance.put(`/tasks/toggle-complete/${taskId}`);
+      const updatedTask = response.data.task;
 
-        // Update the task list with the new status
-        setTasks((prevTasks) =>
-            prevTasks.map((task) =>
-                task._id === updatedTask._id ? updatedTask : task
-            )
-        );
-        toast.success("Task status updated");
+      const sortedTasks = [...tasks]
+        .map((task) => (task._id === updatedTask._id ? updatedTask : task))
+        .sort((a, b) => a.completed - b.completed); // Incomplete first, completed last
+
+      setTasks(sortedTasks); // Update tasks
+      // setTaskListVersion((prev) => prev + 1);
+      toast.success("Task status updated");
     } catch (error) {
-        console.log("Error updating task completion:", error);
-        toast.error("Failed to update task status");
+      console.log("Error updating task completion:", error);
+      toast.error("Failed to update task status");
     }
     setLoading(false);
-};
-  
+  };
+
+  // Fetch tasks based on filter
+  const filteredTasks = (tasks, priority) => {
+    if (!Array.isArray(tasks)) return [];
+
+    switch (priority) {
+      case 'low':
+        return tasks.filter((task) => task.priority === 'low');
+      case 'medium':
+        return tasks.filter((task) => task.priority === 'medium');
+      case 'high':
+        return tasks.filter((task) => task.priority === 'high');
+      default:
+        return tasks; // Return all tasks if 'all' or invalid priority
+    }
+  };
+  // Apply filtering
+  const filtered = filteredTasks(tasks, priority);
 
   useEffect(() => {
     getTasks();
@@ -133,10 +151,10 @@ const MainTask = () => {
   return (
     <>
       {showModal && (
-        <AddEditTask 
-          task={task} 
-          setTask={setTask} 
-          handleSubmit={handleSubmit} 
+        <AddEditTask
+          task={task}
+          setTask={setTask}
+          handleSubmit={handleSubmit}
           closeModal={() => setShowModal(false)}
         />
       )}
@@ -155,20 +173,20 @@ const MainTask = () => {
 
           {/* Task Grid */}
           <div className='grid grid-cols-3 gap-[1.5rem]'>
-            {Array.isArray(tasks) && tasks.length > 0 ? (
-              tasks.map((task) => (
-                <TaskItem 
-                  key={task._id} 
-                  task={task} 
+            {Array.isArray(filtered) && filtered.length > 0 ? (
+              filtered.map((task) => (
+                <TaskItem
+                  key={task._id}
+                  task={task}
                   onComplete={() => toggleTaskCompletion(task._id, task.completed)}
-                  onEdit={() => getTask(task._id)} 
+                  onEdit={() => getTask(task._id)}
                   onDelete={() => deleteTask(task._id)} />
               ))
             ) : (
               <p className="text-center col-span-full">No tasks available</p>
             )}
 
-            <button 
+            <button
               className='h-[7rem] w-full py-2 rounded-md text-lg font-medium text-gray-500 border-dashed border-4 border-grey-400 
               hover:bg-gray-300 hover:border-none transition duration-200 ease-in-out'
               onClick={() => setShowModal(true)}
@@ -179,7 +197,7 @@ const MainTask = () => {
         </div>
 
         {/* Right Section - Task Sidebar */}
-        <div className="w-[15rem]">  
+        <div className="w-[15rem]">
           <TaskSidebar tasks={tasks} loading={loading} />
         </div>
 

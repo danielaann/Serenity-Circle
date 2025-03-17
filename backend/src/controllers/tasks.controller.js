@@ -40,7 +40,7 @@ export const getTasks = asyncHandler(async (req,res) => {
         return res.status(400).json({message: "Unauthorized access"});
     }
     try {
-        const tasks = await TaskModel.find({user: userId});
+        const tasks = await TaskModel.find({user: userId}).sort({completed: 1});
         res.status(200).json({
             length: tasks.length,
             tasks,
