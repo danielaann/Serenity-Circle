@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { axiosInstance } from "../../lib/axios";
 
-const MonthlyMoodCalendar = () => {
+const MonthlyMoodCalendar = ({ reload }) => {
     const [moods, setMoods] = useState([]);
     const [error, setError] = useState(null);
     const [month, setMonth] = useState(new Date().getMonth() + 1); // January is 0, so add 1
@@ -19,7 +19,7 @@ const MonthlyMoodCalendar = () => {
             }
         };
         fetchMoods();
-    }, [month, year]);
+    }, [month, year, reload]); // Add reload to the dependency array
 
     const getColor = (mood) => {
         switch (mood) {

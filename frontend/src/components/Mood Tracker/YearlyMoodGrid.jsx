@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { axiosInstance } from "../../lib/axios";
 
-const YearlyMoodGrid = () => {
+const YearlyMoodGrid = ({ reload }) => {
     const [moods, setMoods] = useState([]);
     const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
 
@@ -15,7 +15,7 @@ const YearlyMoodGrid = () => {
             }
         };
         fetchMoods();
-    }, []);
+    }, [reload]); // Add reload to the dependency array
 
     const getColor = (mood) => {
         switch (mood) {
@@ -59,6 +59,8 @@ const YearlyMoodGrid = () => {
     }, {});
 
     return (
+        <>
+        <h2>Yearly Mood</h2>
         <div
             style={{
                 display: "grid",
@@ -71,6 +73,7 @@ const YearlyMoodGrid = () => {
                 position: "relative",
             }}
         >
+            
             {Array.from({ length: 365 }).map((_, i) => {
                 const moodsForDay = groupedMoods[i + 1] || [];
                 const mostFrequentMood = moodsForDay.length > 0 ? getMostFrequentMood(moodsForDay) : null;
@@ -99,6 +102,7 @@ const YearlyMoodGrid = () => {
                 );
             })}
         </div>
+        </>
     );
 };
 

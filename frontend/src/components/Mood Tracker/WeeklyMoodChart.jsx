@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { axiosInstance } from '../../lib/axios';
 import 'chart.js/auto';
 
-const WeeklyMoodChart = () => {
+const WeeklyMoodChart = ({ reload }) => {
     const [moods, setMoods] = useState([]);
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
@@ -20,7 +20,7 @@ const WeeklyMoodChart = () => {
             }
         };
         fetchMoods();
-    }, [startDate]);
+    }, [startDate, reload]); // Add reload to the dependency array
 
     const handlePrevWeek = () => {
         const newStartDate = new Date(startDate);
@@ -70,22 +70,43 @@ const WeeklyMoodChart = () => {
         return date.toLocaleDateString();
     });
 
+    const groupedMoods = moods.reduce((acc, mood) => {
+        const date = new Date(mood.date).toLocaleDateString();
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+        acc[date].push(mood.mood);
+        return acc;
+    }, {});
+
+    const mostFrequentMoods = labels.map(label => {
+        const moodsForDay = groupedMoods[label] || [];
+        if (moodsForDay.length === 0) return null;
+        const moodCounts = moodsForDay.reduce((acc, mood) => {
+            acc[mood] = (acc[mood] || 0) + 1;
+            return acc;
+        }, {});
+        const mostFrequentMood = Object.keys(moodCounts).reduce((a, b) => moodCounts[a] > moodCounts[b] ? a : b);
+        return moodMap[mostFrequentMood];
+    });
+
+    const filteredMoods = mostFrequentMoods.map((mood, index) => {
+        return mood !== null ? { x: labels[index], y: mood } : null;
+    }).filter(mood => mood !== null);
+
     const data = {
         labels,
         datasets: [
             {
                 label: 'Mood',
-                data: moods.map(mood => ({
-                    x: new Date(mood.date).toLocaleDateString(),
-                    y: moodMap[mood.mood],
-                })),
+                data: filteredMoods,
                 fill: true,
                 backgroundColor: 'rgba(75,192,192,0.2)',
                 borderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: moods.map(mood => getMoodColor(mood.mood)),
+                pointBackgroundColor: filteredMoods.map(mood => getMoodColor(Object.keys(moodMap).find(key => moodMap[key] === mood.y))),
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: moods.map(mood => getMoodColor(mood.mood)),
+                pointHoverBorderColor: filteredMoods.map(mood => getMoodColor(Object.keys(moodMap).find(key => moodMap[key] === mood.y))),
             },
         ],
     };
