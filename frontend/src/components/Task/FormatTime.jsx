@@ -20,9 +20,9 @@ export const FormatTime = (createdAt) => {
     }
 
     //if task created in past 4 weeks
-    if (created.isAfter(moment().subtract(3, 'weeks'), week)) {
+    if (created.isAfter(moment().subtract(3, 'weeks'))) {
         return created.fromNow();
-    }
+    }    
 
 
     return created.format('Do MMM YYYY');
