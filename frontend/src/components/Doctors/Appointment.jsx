@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { assets, doctors } from "../../assets_doc/assets_frontend/assets.js";
+import RelatedDoctors from './RelatedDoctors.jsx';
 
 const Appointment = () => {
     const { docId } = useParams();
@@ -79,7 +80,7 @@ const Appointment = () => {
     }
 
     return (
-        <div className='w-[85%] mt-2'>
+        <div className='w-[85%] mt-2 mx-2'>
             {/* Doctor details */}
             <div className='flex flex-col sm:flex-row gap-4'>
                 <div>
@@ -130,6 +131,9 @@ const Appointment = () => {
                 </div>
                 <button className='bg-primary text-sm font-light px-14 py-3 rounded-full my-6'>Book an Appointment</button>
             </div>
+
+            {/* listing related doctors */}
+            <RelatedDoctors docId={docId} speciality={docInfo.speciality}/>
         </div>
     );
 };

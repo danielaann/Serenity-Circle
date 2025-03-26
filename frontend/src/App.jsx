@@ -23,6 +23,7 @@ import Pending from "./components/Task/Pending";
 import Overdue from "./components/Task/Overdue";
 import Doctors from "./pages/Doctors";
 import Appointment from "./components/Doctors/Appointment";
+import Contact from "./pages/Contact";
 
 const App = () =>{
   const {authUser,checkAuth, isCheckingAuth} = useAuthStore();
@@ -55,6 +56,7 @@ const App = () =>{
         <Route path="/tasks/*" element={authUser? <TaskPage/> : <Navigate to="/login"/>}/>
         <Route path="/doctors" element={authUser? <Doctors/> : <Navigate to="/login"/>}/>
         <Route path="/appointment/:docId" element={authUser? <Appointment/> : <Navigate to="/login"/>}/>
+        <Route path="/contact" element={authUser? <Contact/> : <Navigate to="/login"/>}/>
       </Routes>
       </Layout>
       <Toaster/>
