@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { assets, doctors } from "../../assets_doc/assets_frontend/assets.js";
 import RelatedDoctors from './RelatedDoctors.jsx';
+import { axiosInstance } from '../../lib/axios.js';
 
 const Appointment = () => {
     const { docId } = useParams();
@@ -60,6 +61,29 @@ const Appointment = () => {
             }
 
             setDocSlots(prev => ([...prev, timeSlots]));
+        }
+    }
+
+    const bookApointment = async (params) => {
+        try {
+            const date = docSlots[slotIndex][0].datetime
+
+            let day = date.getDate();
+            let month = date.getMonth()+1;
+            let year = date.getFullYear();
+
+            const slotDate = day + '_'+ month + '_'+year;
+            
+            const {data} = await axiosInstance.post('/auth//book-appointment', {docId,slotDate,slotTime})
+            if (data.success) {
+                toast.success(data.message)
+                getDoctorsdata();
+            } else {
+                
+            }
+
+        } catch (error) {
+            
         }
     }
 
@@ -129,7 +153,7 @@ const Appointment = () => {
                         </p>
                     ))}
                 </div>
-                <button className='bg-primary text-sm font-light px-14 py-3 rounded-full my-6'>Book an Appointment</button>
+                <button className='bg-primary text-sm font-light px-14 py-3 rounded-full my-6' onClick={bookApointment}>Book an Appointment</button>
             </div>
 
             {/* listing related doctors */}

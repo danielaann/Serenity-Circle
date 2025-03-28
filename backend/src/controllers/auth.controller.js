@@ -3,12 +3,14 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
-    const { fullName, email, password } = req.body;
+    const { fullName, email, password, role } = req.body;
 
     try {
-        console.log("Signup request body:", req.body);
+        if ( !email || !fullName ) {
+            return res.status(400).json({ message: "Please Name and Email" });
+        }
 
-        if ( !email || !fullName || !password || password.length < 6) {
+        if ( !password || password.length < 6) {
             return res.status(400).json({ message: "Password should be greater than 6 characters" });
         }
 
@@ -24,12 +26,13 @@ export const signup = async (req, res) => {
         const newUser = new User({
             fullName,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: role || "user",
         });
 
         if (newUser) {
             try {
-                generateTokens(newUser._id, res);
+                generateTokens(newUser._id,newUser.role, res);
             } catch (err) {
                 console.log("Error generating tokens:", err.message);
                 return res.status(500).json({ message: "Token generation failed" });
@@ -61,13 +64,15 @@ export const login = async (req,res)=>{
             return res.status(400).json({message: "Invalid credentials"})
         }
 
-        generateTokens(user._id,res)
+        generateTokens(user._id,user.role,res)
         res.status(200).json({
             _id:user._id,
             fullName: user.fullName,
             email: user.email,
-            profilePic: user.profilePic
+            profilePic: user.profilePic,
+            role: user.role,
         })
+
 
     }catch (error){
         console.error("Error in login controller:", error.message);
@@ -88,6 +93,7 @@ export const signout = (req,res)=>{
 export const checkAuth = (req,res) =>{
     try {
         res.status(200).json(req.user);
+        console.log(req.user)
     } catch (error) {
         console.log("Error in checkAuth controller", error);
         res.status(500).json({ message: "Internal Server Error"});

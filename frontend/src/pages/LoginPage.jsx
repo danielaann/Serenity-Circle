@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuthStore } from '../store/useAuthStore';
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword]=useState(false);
@@ -10,12 +11,15 @@ const LoginPage = () => {
     password:"",
   });
 
-  const {login, isLoggingIn} = useAuthStore();
+  const {login,authUser, isLoggingIn} = useAuthStore();
+  const navigate = useNavigate();
 
   const handleSubmit= async (e)=>{
     e.preventDefault();
+    console.log("Form data submitted:", formData);
     login(formData);
   };
+
 
   return (
     <div className="h-fit grid lg:grid-cols-2">
@@ -102,6 +106,14 @@ const LoginPage = () => {
             Don&apos;t have an account?{" "}
             <Link to="/signup" className="link link-primary">
               Create account
+            </Link>
+          </p>
+        </div>
+        <div className="text-center">
+          <p className="text-base-content/60">
+            Don&apos;t have an account?{" "}
+            <Link to="/doc/signup" className="link link-primary">
+              Doc Create account
             </Link>
           </p>
         </div>
