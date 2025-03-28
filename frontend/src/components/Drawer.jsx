@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Drawer = ({ title = "App Title", menuItems = [] }) => {
   return (
@@ -17,7 +18,7 @@ const Drawer = ({ title = "App Title", menuItems = [] }) => {
               item.isActive ? "bg-primary/40 text-primary-content" : ""
             }`}
           >
-            <a href={item.link || "#"}>{item.name}</a>
+            <Link to={item.link}>{item.name}</Link>
           </li>
         ))}
       </ul>

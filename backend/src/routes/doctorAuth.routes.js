@@ -1,13 +1,13 @@
 import express from "express";
-import { doctorSignup, doctorLogin, checkDoctorAuth, doctorSignout } from "../controllers/doctorAuth.controller.js";
-import protectDoctorRoute  from "../middleware/doctorAuth.middleware.js";
+import { registerOrUpdateDoctor, getDoctorProfile } from "../controllers/doctorAuth.controller.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/signup",doctorSignup);
-router.post("/login", doctorLogin);
-router.post("/signout",doctorSignout);
+// ✅ Register or Update Doctor Profile
+router.post("/register-update", protectRoute, registerOrUpdateDoctor);
 
-router.get('/protected',protectDoctorRoute,checkDoctorAuth);
+// ✅ Get Doctor Profile
+router.get("/profile/:id", protectRoute, getDoctorProfile);
 
 export default router;

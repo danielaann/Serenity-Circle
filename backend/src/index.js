@@ -28,7 +28,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/notes",noteRoutes);
 app.use("/api/tasks",taskRoutes);
 app.use("/api/moods",moodRoutes);
-app.use("/api/doctors", doctorRoutes);
+app.use("/api/doctor", doctorRoutes);
 
 app.listen(PORT, ()=>{
     console.log("Server is running on port:"+ PORT);

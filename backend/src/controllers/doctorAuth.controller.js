@@ -1,105 +1,60 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import doctorModel from "../models/doctor.model.js";
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
+import DoctorModel from "../models/doctor.model.js";
 
-export const doctorSignup = async (req, res) => {
+// ✅ Register or Update Doctor Profile
+export const registerOrUpdateDoctor = async (req, res) => {
+    const { userId, speciality, degree, experience, about, fee, address } = req.body;
+
     try {
-        const { name, email, password, image, speciality, degree, experience, about, available, fee, address, date } = req.body;
-
-        // Check if doctor already exists
-        const existingDoctor = await doctorModel.findOne({ email });
-        if (existingDoctor) {
-            return res.status(400).json({ message: "Doctor already registered" });
+        if (!userId || !speciality || !degree || !experience || !about || !fee || !address) {
+            return res.status(400).json({ message: "All fields are required!" });
         }
 
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create new doctor
-        const newDoctor = new doctorModel({
-            name,
-            email,
-            password: hashedPassword,
-            image,
-            speciality,
-            degree,
-            experience,
-            about,
-            available,
-            fee,
-            address,
-            date
-        });
-
-        await newDoctor.save();
-
-        // Generate JWT token
-        const token = jwt.sign({ doctorId: newDoctor._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-        res.cookie("jwt", token, { httpOnly: true, secure: true, sameSite: "strict" });
-
-        res.status(201).json({
-            message: "Doctor registered successfully",
-            doctor: { name: newDoctor.name, email: newDoctor.email, speciality: newDoctor.speciality },
-            token
-        });
-
-    } catch (error) {
-        console.error("Doctor Signup Error:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-
-
-export const doctorLogin = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        // Check if doctor exists
-        const doctor = await doctorModel.findOne({ email });
-        if (!doctor) {
-            return res.status(401).json({ message: "Invalid email or password" });
+        const user = await User.findById(userId);
+        if (!user || user.role !== "doctor") {
+            return res.status(404).json({ message: "User not found or not a doctor!" });
         }
 
-        // Verify password
-        const isMatch = await bcrypt.compare(password, doctor.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid email or password" });
-        }
-
-        // Generate JWT token
-        const token = jwt.sign({ doctorId: doctor._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-        res.cookie("jwt", token, { httpOnly: true, secure: true, sameSite: "strict" });
+        // 🔄 Update existing doctor profile OR create a new one
+        const existingDoctor = await DoctorModel.findById(userId);
+        const updatedDoctor = await DoctorModel.findByIdAndUpdate(
+            userId,
+            { speciality, degree, experience, about, fee, address },
+            { new: true, upsert: true } // ✅ Upsert: Creates if not found
+        );
 
         res.status(200).json({
-            message: "Doctor logged in successfully",
-            doctor: { name: doctor.name, email: doctor.email, speciality: doctor.speciality },
-            token
+            message: existingDoctor ? "Doctor profile updated successfully" : "Doctor profile created successfully",
+            doctor: updatedDoctor
         });
 
     } catch (error) {
-        console.error("Doctor Login Error:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Doctor Registration Error:", error);
+        res.status(500).json({ message: "Error creating/updating doctor profile" });
     }
 };
 
-export const checkDoctorAuth = (req,res) =>{
-    try {
-        res.status(200).json(req.doctor);
-    } catch (error) {
-        console.error("Error in checkDoctorAuth controller:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
 
-export const doctorSignout = (req, res) => {
+// ✅ Get Doctor Profile
+export const getDoctorProfile = async (req, res) => {
     try {
-        res.cookie("jwt", "", { maxAge: 0 }); // Clear JWT token
-        res.status(200).json({ message: "Doctor logged out successfully" });
+        const userId = req.params.id;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid User ID" });
+        }
+
+        // 🔍 Fetch doctor profile using `_id`
+        const doctor = await DoctorModel.findById(userId);
+
+        if (!doctor) {
+            return res.status(404).json({ message: "Doctor profile not found" });
+        }
+
+        res.status(200).json(doctor);
     } catch (error) {
-        console.error("Error in doctorSignout controller:", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Error fetching doctor profile:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };

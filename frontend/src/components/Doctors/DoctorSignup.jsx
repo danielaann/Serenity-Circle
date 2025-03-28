@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-import { doctorSignup } from "../../store/useDocStore";
+import React, { useState, useEffect } from "react";
+import { axiosInstance } from "../../lib/axios";
+import { useAuthStore } from "../../store/useAuthStore";
 import { assets } from "../../assets_doc/assets_admin/assets.js";
-import { useAuthStore } from '../store/useAuthStore';
+import toast from "react-hot-toast";
 
 const DoctorSignup = () => {
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
         speciality: "",
         degree: "",
         experience: "",
@@ -17,129 +15,151 @@ const DoctorSignup = () => {
         image: "",
     });
 
-    const [docImg, setDocImg] = useState(false)
+    const [docImg, setDocImg] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const authUser = useAuthStore(state => state.authUser);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    useEffect(() => {
+        const fetchDoctorData = async () => {
+            if (!authUser?._id) return;
+
+            try {
+                const response = await axiosInstance.get(`/doctor/profile/${authUser._id}`);
+                if (response.status === 200) {
+                    setFormData(response.data); // Load profile data
+                    setDocImg(response.data.image || null); // Set image preview
+                    setIsUpdating(true);
+                }
+            } catch (error) {
+                if (error.response?.status === 404) {
+                    console.warn("Doctor profile not found, allowing signup.");
+                } else {
+                    console.error("Error fetching doctor profile:", error);
+                }
+            }
+        };
+
+        fetchDoctorData();
+    }, [authUser]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setDocImg(URL.createObjectURL(file));
+            setFormData(prev => ({ ...prev, image: file }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await doctorSignup(formData);
-            alert(response.message);
-        } catch (error) {
-            alert(error.response?.data?.message || "Signup failed");
+        setLoading(true);
+    
+        if (!formData.speciality) {
+            toast.error("Speciality is required!");
+            setLoading(false);
+            return;
         }
-    };
+    
+        // Add userId to formData
+        const dataToSend = { ...formData, userId: authUser._id };
+    
+        console.log("FormData before sending:", dataToSend);
+    
+        try {
+            const response = await axiosInstance.post("/doctor/register-update", dataToSend); // Send formData directly
+            toast.success(isUpdating ? "Profile updated successfully!" : "Signup successful!");
+            setIsUpdating(true);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Operation failed");
+            console.error("API error:", error);
+        }
+    
+        setLoading(false);
+    };    
 
     return (
-        <>
-            <form onSubmit={handleSubmit} className="m-5 w-full">
+        <form onSubmit={handleSubmit} className="m-5 w-full">
+            <p className="text-2xl font-semibold m-auto">
+                <span className="text-gray-600">Doctor</span> {isUpdating ? "Update" : "Sign Up"}
+            </p>
 
-                <p className="text-2xl font-semibold m-auto"><span className="text-gray-600">Doctor</span> Sign Up</p>
-
-                <div className="bg-white px-8 py-8 border-2 shadow-lg rounded w-full max-w-4xl overflow-y-scroll scrollbar-hide">
-                    <div className="flex items-center gap-4 mb-8 text-gray-500">
-                        <label htmlFor="doc-img">
-                            <img className="w-16 bg-gray-100 rounded-full cursor-pointer" src={assets.upload_area} />
-                        </label>
-                        <input onChange={(e) => {
-                            handleChange(e); // Call the first function
-                            setDocImg(e.target.files[0]); // Call the second function
-                        }} type="file" id="doc-img" hidden />
-                        <p>Upload doctor <br /> image</p>
-                    </div>
-
-                    <div className="flex flex-col lg:flex-row items-center gap-10 text-gray-600">
-                        <div className="w-full lg:flex-1 flex flex-col gap-4">
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Your Name:</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Name" required />
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Email:</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="email" placeholder="Email" required />
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Password</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="password" placeholder="Password" required />
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Years of Experience:</p>
-                                <select onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" name="">
-                                    <option value='1 Year'>1 Year</option>
-                                    <option value='2 Year'>2 Year</option>
-                                    <option value='3 Year'>3 Year</option>
-                                    <option value='4 Year'>4 Year</option>
-                                    <option value='5 Year'>5 Year</option>
-                                    <option value='6 Year'>6 Year</option>
-                                    <option value='7 Year'>7 Year</option>
-                                    <option value='8 Year'>8 Year</option>
-                                    <option value='9 Year'>9 Year</option>
-                                    <option value='10 Year'>10 Year</option>
-                                </select>
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Fees:</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="number" placeholder="Fee" required />
-                            </div>
-                        </div>
-
-                        <div className="w-full lg:flex-1 flex flex-col gap-4">
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Speciality:</p>
-                                <select onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2">
-                                    <option value='Psychiatrists'>Psychiatrists</option>
-                                    <option value='Neurologist'>Neurologist</option>
-                                    <option value='Pyscologist'>Pyscologist</option>
-                                </select>
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Education</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Eduction" required />
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-1">
-                                <p>Address</p>
-                                <input onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Address 1" required />
-                                <input className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Address 2" required />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="mt-4 mb-2">About</p>
-                        <textarea className="w-full px-4 pt-2 border-4 border-gray-300 rounded" placeholder="Short description" rows={5} required />
-                    </div>
-
-                    <button type="submit" className="bg-primary px-10 py-3 mt-4 text-primary-content rounded-full">Sign Up</button>
+            <div className="bg-white px-8 py-8 border-2 shadow-lg rounded w-full max-w-4xl overflow-y-scroll scrollbar-hide">
+                <div className="flex items-center gap-4 mb-8 text-gray-500">
+                    <label htmlFor="doc-img">
+                        <img
+                            className="w-16 h-16 bg-gray-100 rounded-full cursor-pointer"
+                            src={docImg || assets.upload_area}
+                            alt="Upload Preview"
+                        />
+                    </label>
+                    <input type="file" id="doc-img" hidden onChange={handleImageChange} />
+                    <p>Upload doctor <br /> image</p>
                 </div>
-            </form>
 
+                <div className="flex flex-col lg:flex-row items-center gap-10 text-gray-600">
+                    <div className="w-full lg:flex-1 flex flex-col gap-4">
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Your Name:</p>
+                            <input
+                                value={authUser?.fullName || ""}
+                                className="border-4 border-gray-300 rounded px-3 py-2 bg-gray-200 cursor-not-allowed"
+                                type="text"
+                                readOnly
+                            />
+                        </div>
 
-            {/* try */}
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="name" placeholder="Name" onChange={handleChange} required />
-                <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                <input type="text" name="speciality" placeholder="Speciality" onChange={handleChange} required />
-                <input type="text" name="degree" placeholder="Degree" onChange={handleChange} required />
-                <input type="text" name="experience" placeholder="Experience" onChange={handleChange} required />
-                <textarea name="about" placeholder="About" onChange={handleChange} required />
-                <input type="number" name="fee" placeholder="Fee" onChange={handleChange} required />
-                <input type="text" name="address" placeholder="Address" onChange={handleChange} required />
-                <input type="text" name="image" placeholder="Image URL" onChange={handleChange} required />
-                <button type="submit">Signup</button>
-            </form>
-        </>
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Years of Experience:</p>
+                            <select name="experience" value={formData.experience} onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2">
+                                {[...Array(10).keys()].map(year => (
+                                    <option key={year + 1} value={`${year + 1} Year`}>{year + 1} Year</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Fees:</p>
+                            <input name="fee" value={formData.fee} onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="number" placeholder="Fee" required />
+                        </div>
+                    </div>
+
+                    <div className="w-full lg:flex-1 flex flex-col gap-4">
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Speciality:</p>
+                            <select name="speciality" value={formData.speciality} onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2">
+                                <option value="Psychiatrists">Psychiatrists</option>
+                                <option value="Neurologist">Neurologist</option>
+                                <option value="Psychologist">Psychologist</option>
+                            </select>
+                        </div>
+
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Education:</p>
+                            <input name="degree" value={formData.degree} onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Education" required />
+                        </div>
+
+                        <div className="flex-1 flex flex-col gap-1">
+                            <p>Address:</p>
+                            <input name="address" value={formData.address} onChange={handleChange} className="border-4 border-gray-300 rounded px-3 py-2" type="text" placeholder="Address" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="mt-4 mb-2">About</p>
+                    <textarea name="about" value={formData.about} onChange={handleChange} className="w-full px-4 pt-2 border-4 border-gray-300 rounded" placeholder="Short description" rows={5} required />
+                </div>
+
+                <button type="submit" className="bg-primary px-10 py-3 mt-4 text-primary-content rounded-full">
+                    {isUpdating ? "Update Profile" : "Sign Up"}
+                </button>
+            </div>
+        </form>
     );
 };
 

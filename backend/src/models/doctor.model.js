@@ -2,25 +2,19 @@ import mongoose from 'mongoose';
 
 const doctorSchema = new mongoose.Schema(
     {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User" 
+        },
+        
         name: {
-            type : String,
-            required: true,
-        },
-
-        email: {
-            type : String,
-            required: true,
-            unique: true,
-        },
-
-        password: {
             type : String,
             required: true,
         },
 
         image: {
             type : String,
-            required: true
+            default:""
         },
 
         speciality: {
@@ -59,8 +53,8 @@ const doctorSchema = new mongoose.Schema(
         },
 
         date:{
-            type: Number,
-            required: true
+            type: Date,
+            default: Date.now,
         },
 
         slotsBooked: {
