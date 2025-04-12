@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link } from 'react-router-dom';
 import { LogOut, MessageSquare, Settings } from 'lucide-react';
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
@@ -19,7 +20,7 @@ const Navbar = () => {
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
             >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-primary" />
+                <img src={logo} className="object-contain text-primary" />
               </div>
               <h1 className="text-lg font-bold">Serenity Circle</h1>
             </Link>

@@ -2,23 +2,24 @@ import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
     userId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
 
     docId: {
-        type:String,
+        type: String,
         required: true
     },
 
     slotDate: {
         type: String,
-        required:true
+        required: true
     },
 
-    slotTime:{
+    slotTime: {
         type: String,
-        required:true
+        required: true
     },
 
     userData: {
@@ -27,13 +28,13 @@ const appointmentSchema = new mongoose.Schema({
     },
 
     docData: {
-        type:Object,
-        required:true
+        type: Object,
+        required: true
     },
 
-    amount:{
-        type:Number,
-        required:true
+    amount: {
+        type: Number,
+        required: true
     },
 
     date: {
@@ -41,19 +42,19 @@ const appointmentSchema = new mongoose.Schema({
         required: true
     },
 
-    cancelled:{
+    cancelled: {
         type: Boolean,
         default: false
     },
 
-    payment:{
-        type:Boolean,
+    payment: {
+        type: Boolean,
         default: false
     },
 
-    isCompleted:{
+    isCompleted: {
         type: Boolean,
-        default:false
+        default: false
     }
 })
 

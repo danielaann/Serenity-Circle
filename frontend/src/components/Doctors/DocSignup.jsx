@@ -3,6 +3,8 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { Eye, EyeOff, Mail, MessageSquare, User, Lock, Loader, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import logo from "../../assets/logo.png";
+import img from '../../assets/docacc.jpg';
 
 const DocSignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +38,7 @@ const DocSignUpPage = () => {
   };
 
   return (
-    <div className='h-fit grid lg:grid-cols-2'>
+    <div className='h-fit w-fit grid lg:grid-cols-2'>
       {/* left hand side */}
       <div className='flex flex-col justify-center items-center p-6 sm:p-12'>
         <div className='w-full max-w-md space-y-8'>
@@ -44,7 +46,7 @@ const DocSignUpPage = () => {
           <div className='text-center mb-8'>
             <div className='flex flex-col items-center gap-2 group'>
               <div className='size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
-                <MessageSquare className='size-6 text-primary'/>
+              <img src={logo} className='object-contain text-primary'/>
               </div>
               <h1 className='text-2xl font-bold mt-2'> Doctor Create Account</h1>
               <p className='text-base-content/60'>Get started with your free account</p>
@@ -134,6 +136,12 @@ const DocSignUpPage = () => {
       </div>
 
       {/* right side */}
+      <div className="hidden lg:flex flex-col justify-center mt-10 items-center p-6 sm:p-12 w-full h-full">
+                  <img src={img} alt="Login" className="w-full h-auto object-contain max-w-lg pr-4" />
+                  <h1 class="text-5xl mt-5 font-extrabold text-pink-400 drop-shadow-md">
+                    Serenity Circle
+                  </h1>
+                </div>
       
     </div>
   )

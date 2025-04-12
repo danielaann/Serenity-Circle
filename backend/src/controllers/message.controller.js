@@ -4,7 +4,7 @@ import Message from "../models/message.model.js"
 export const getUsersForSidebar = async (req, res)=>{
     try{
         const loggedInUserId =req.user._id;
-        const fillteredusers = await User.find({_id: {$ne: loggedInUserId}}).select("-password");   //fetch all user except for the one whivh has same as the person and select all info excep password.
+        const fillteredusers = await User.find({_id: {$ne: loggedInUserId}, role:'doctor'}).select("-password");   //fetch all user except for the one whivh has same as the person and select all info excep password.
 
         res.status(200).json(fillteredusers);
 
