@@ -8,11 +8,11 @@ function Player() {
     const {track, seekBar, seekBg, playStatus, play, pause, time}= useContext(PlayerContext);
 
   return (<>
-    <div className='w-[80%] overflow-auto scrollbar-hide'>
+    <div className='w-[80%] overflow-auto scrollbar-hide mb-5'>
         <Display/>
     </div>
 
-    <div className='h-[10%] bg-gray-500 flex justify-between items-center px-4 w-[80%]'>
+    <div className='h-[8%] bg-gray-500 flex justify-between items-center px-4 w-[84%] fixed bottom-0'>
        <div className='hidden lg:flex items-center gap-4 text-black'>
         <img className='w-10' src={track.image} />
             <div>

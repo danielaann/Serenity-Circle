@@ -53,7 +53,7 @@ const DisplayAlbum = () => {
         ))
     }
     
-    <div className='h-[10%] bg-gray-500 flex justify-between items-center px-4 w-[80%]'>
+    <div className='h-[8%] bg-gray-500 flex justify-between items-center px-4 w-[80%] fixed bottom-0 '>
            <div className='hidden lg:flex items-center gap-4 text-black'>
             <img className='w-10' src={track.image} />
                 <div>

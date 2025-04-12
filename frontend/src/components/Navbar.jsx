@@ -9,7 +9,7 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 w-[98rem] z-50 bg-slate-100"
+      className="fixed top-0 left-0 w-[98rem] z-50 bg-secondary"
     >
       <div className="container mx-auto px-2 h-16">
         <div className="flex items-center justify-between h-full">
@@ -20,7 +20,7 @@ const Navbar = () => {
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
             >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <img src={logo} className="object-contain text-primary" />
+                <img src={logo} className="object-contain text- bg-slate-100 rounded-lg" />
               </div>
               <h1 className="text-lg font-bold">Serenity Circle</h1>
             </Link>
