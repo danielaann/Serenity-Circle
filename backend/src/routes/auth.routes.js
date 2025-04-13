@@ -15,6 +15,6 @@ router.put("/update-profile", protectRoute ,updateProfile);
 router.get("/check", protectRoute, checkAuth);
 
 
-router.post("/book-appointment", protectRoute, authorizeRoles("doctor"), bookApointment);
+router.post("/book-appointment", protectRoute, bookApointment);
 
 export default router;

@@ -64,6 +64,7 @@ const Appointment = () => {
         }
     }
 
+
     const bookApointment = async (params) => {
         try {
             const date = docSlots[slotIndex][0].datetime
@@ -73,6 +74,8 @@ const Appointment = () => {
             let year = date.getFullYear();
 
             const slotDate = day + '_'+ month + '_'+year;
+
+            console.log({ docId, slotDate, slotTime }); // Log the payload
             
             const {data} = await axiosInstance.post('/auth//book-appointment', {docId,slotDate,slotTime})
             if (data.success) {

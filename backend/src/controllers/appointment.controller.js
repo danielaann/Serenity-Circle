@@ -7,6 +7,10 @@ export const bookApointment = async (req, res) => {
     try {
         const {userId, docId, slotDate, slotTime} = req.body;
 
+        if (!docId || !slotDate || !slotTime) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
+        }
+
         const docData = await doctorModel.findById(docId).select('-password')
          
         if(!docData.available){

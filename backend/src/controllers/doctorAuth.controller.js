@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import DoctorModel from "../models/doctor.model.js";
+import cloudinary from 'cloudinary'; // Assuming it's already configured
 
-// ✅ Register or Update Doctor Profile
 export const registerOrUpdateDoctor = async (req, res) => {
-    const { userId, speciality, degree, experience, about, fee, address } = req.body;
+    const { userId, speciality, degree, experience, about, fee, address, image } = req.body;
 
     try {
         if (!userId || !speciality || !degree || !experience || !about || !fee || !address) {
@@ -16,12 +16,33 @@ export const registerOrUpdateDoctor = async (req, res) => {
             return res.status(404).json({ message: "User not found or not a doctor!" });
         }
 
-        // 🔄 Update existing doctor profile OR create a new one
+        let uploadedImageUrl;
+
+        // 🖼️ If image is base64, upload it to Cloudinary
+        if (image && image.startsWith("data:image")) {
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            uploadedImageUrl = uploadResponse.secure_url;
+        }
+
+        const updateData = {
+            speciality,
+            degree,
+            experience,
+            about,
+            fee,
+            address,
+            name: user.fullName,
+        };
+
+        if (uploadedImageUrl) {
+            updateData.image = uploadedImageUrl;
+        }
+
         const existingDoctor = await DoctorModel.findById(userId);
         const updatedDoctor = await DoctorModel.findByIdAndUpdate(
             userId,
-            { speciality, degree, experience, about, fee, address },
-            { new: true, upsert: true } // ✅ Upsert: Creates if not found
+            updateData,
+            { new: true, upsert: true }
         );
 
         res.status(200).json({
@@ -36,7 +57,8 @@ export const registerOrUpdateDoctor = async (req, res) => {
 };
 
 
-// ✅ Get Doctor Profile
+
+// Get Doctor Profile
 export const getDoctorProfile = async (req, res) => {
     try {
         const userId = req.params.id;
@@ -55,6 +77,18 @@ export const getDoctorProfile = async (req, res) => {
         res.status(200).json(doctor);
     } catch (error) {
         console.error("Error fetching doctor profile:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// Get All Doctors
+export const getAllDoctors = async (req, res) => {
+    try {
+        const doctors = await DoctorModel.find().populate('_id', 'name'); // Populate the `name` field from the `User` model
+        console.log(doctors);
+        res.status(200).json(doctors);
+    } catch (error) {
+        console.error("Error fetching doctors:", error);
         res.status(500).json({ message: "Server error" });
     }
 };

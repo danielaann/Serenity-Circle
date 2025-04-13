@@ -50,8 +50,12 @@ const DoctorSignup = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setDocImg(URL.createObjectURL(file));
-            setFormData(prev => ({ ...prev, image: file }));
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                setDocImg(reader.result); // Preview
+                setFormData(prev => ({ ...prev, image: reader.result })); // Base64 for backend
+            };
         }
     };
 
@@ -85,7 +89,7 @@ const DoctorSignup = () => {
     return (
         <form onSubmit={handleSubmit} className="m-5 w-full">
             <p className="text-2xl font-semibold m-auto">
-                <span className="text-gray-600">Doctor</span> {isUpdating ? "Update" : "Sign Up"}
+                <span className="text-gray-600">Doctor</span> {isUpdating ? "Update Profile" : "Sign Up"}
             </p>
 
             <div className="bg-white px-8 py-8 border-2 shadow-lg rounded w-full max-w-4xl overflow-y-scroll scrollbar-hide">
