@@ -29,6 +29,7 @@ import DoctorLogin from "./components/Doctors/DacotorLogin";
 import DoctorDashboard from "./components/Doctors/DoctorDashboard";
 import DocSignUpPage from "./components/Doctors/DocSignup";
 import WelcomePage from "./pages/WelcomePage";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -71,6 +72,7 @@ const App = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/welcome" element={<WelcomePage/>}/>
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/profile" element={ <ProfilePage /> } />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/relaxation" element={<Relaxation />} />
                 <Route path="/album/:id" element={<DisplayAlbum />} />
