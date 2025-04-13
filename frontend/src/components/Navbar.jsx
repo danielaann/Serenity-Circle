@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link } from 'react-router-dom';
-import { LogOut, MessageSquare, Settings } from 'lucide-react';
+import { LogOut, MessageSquare, Settings, User } from 'lucide-react';
 import logo from "../assets/logo.png";
 
 const Navbar = () => {
@@ -34,6 +34,12 @@ const Navbar = () => {
                   <Settings className="w-4 h-4" />
                   <span className="hidden sm:inline">Settings</span>
                 </Link>
+                
+                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
+                  <User className="size-5" />
+                  <span className="hidden sm:inline">Profile</span>
+                </Link>
+
                 <button
                   className="flex gap-2 items-center"
                   onClick={logout}
@@ -41,6 +47,8 @@ const Navbar = () => {
                   <LogOut className="size-5" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
+
+
               </>
             )}
           </div>
