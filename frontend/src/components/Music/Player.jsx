@@ -17,7 +17,7 @@ function Player() {
         <img className='w-10' src={track.image} />
             <div>
                 <p>{track.name}</p>
-                <p>{track.desc.slice(0,12)}</p>
+                <p>{track.desc.slice(0,28)}</p>
             </div>
         </div>
         <div className='flex flex-col items-center gap-1 m-auto'>

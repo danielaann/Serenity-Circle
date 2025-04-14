@@ -1,6 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { create } from "zustand";
-import { songsData } from "../../assets/assets";
+import { songsData,breathingSongsData,forestSongsData,waterSongsData,meditationSongsData } from "../../assets/assets";
 
 export const PlayerContext = createContext();
 
@@ -10,7 +10,7 @@ const PlayerContextProvider=(props)=>{
     const seekBg = useRef();
     const seekBar = useRef();
 
-    const [track,setTrack] = useState(songsData[0]);
+    const [track,setTrack] = useState(breathingSongsData[0]);
     const [playStatus, setPlayStatus] = useState(false);
     const [time, setTime] =useState({
         currentTime:{
@@ -33,11 +33,33 @@ const PlayerContextProvider=(props)=>{
         setPlayStatus(false);
     }
 
-    const playWithId = async (id)=>{
-        await setTrack(songsData[id]);
+    const playWithId = async (id, category) => {
+        let data;
+      
+        switch (category) {
+          case "breathing":
+            data = breathingSongsData;
+            break;
+          case "forest":
+            data = forestSongsData;
+            break;
+        //   case "sleep":
+        //     data = sleepSongsData;
+        //     break;
+          case "water":
+            data = waterSongsData;
+            break;
+          case "meditation":
+            data = meditationSongsData;
+            break;
+          default:
+            data = breathingSongsData;
+        }
+      
+        await setTrack(data[id]);
         await audioRef.current.play();
         setPlayStatus(true);
-    }
+      };
 
     useEffect(() => {
         if (!audioRef.current) return;
