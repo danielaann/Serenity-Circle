@@ -61,13 +61,18 @@ const MoodTracker = ({ onMoodAdded }) => {
   };
 
   return (
-    <div className="p-6 bg-white shadow rounded">
-      <button
-        onClick={() => setShowModal(true)}
-        className="bg-blue-500 text-white p-2 rounded"
-      >
-        Add Mood
-      </button>
+    <div className="p-6 mb-4 w-full">
+      <div className="flex items-center mb-2">
+        <h4 className="text-lg font-semibold mb-0">Log how you're feeling:</h4>
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-secondary text-black px-4 py-2 rounded"
+        >
+          Add Mood
+        </button>
+      </div>
+
+
 
       {showModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">

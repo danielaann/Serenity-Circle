@@ -5,12 +5,12 @@ import { useAuthStore } from '../store/useAuthStore';
 
 const Layout = ({ children }) => {
   const menuItems = [
-    { name: 'Home', link: '/' },
-    { name: 'Settings', link: '/settings' },
-    { name: 'Dashboard', link: '/dashboard' },
+    { name: 'Mood Dashboard', link: '/dashboard' },
     { name: 'Relaxation', link: '/relaxation'},
     { name: 'Journal', link: '/notes'},
     { name: 'Task Manager', link: '/tasks'},
+    { name: 'Book Doctors', link: '/doctors'},
+    { name: 'Chat with Doctors', link: '/' },
   ];
 
   const { authUser } = useAuthStore();

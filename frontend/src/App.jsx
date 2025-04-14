@@ -89,6 +89,7 @@ const App = () => {
               <>
                 {/* Doctor-Specific Routes */}
                 <Route path="/welcome" element={<WelcomePage/>}/>
+                <Route path="/" element={<HomePage />} />
                 <Route path="/doctor/signup" element={<DoctorSignup />} />
                 <Route path="/doctor/login" element={<DoctorLogin />} />
                 <Route

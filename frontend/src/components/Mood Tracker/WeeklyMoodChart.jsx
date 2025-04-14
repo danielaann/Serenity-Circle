@@ -6,7 +6,17 @@ import 'chart.js/auto';
 const WeeklyMoodChart = ({ reload }) => {
     const [moods, setMoods] = useState([]);
     const [error, setError] = useState(null);
-    const [startDate, setStartDate] = useState(new Date());
+    const getLastSunday = () => {
+        const today = new Date();
+        const day = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const lastSunday = new Date(today);
+        lastSunday.setDate(today.getDate() - day); // Go back to Sunday
+        lastSunday.setHours(0, 0, 0, 0); // Reset time
+        return lastSunday;
+    };
+    
+    const [startDate, setStartDate] = useState(getLastSunday());
+    
 
     useEffect(() => {
         const fetchMoods = async () => {

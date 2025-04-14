@@ -1,19 +1,30 @@
 import User from '../models/user.model.js';
 import Message from "../models/message.model.js"
 
-export const getUsersForSidebar = async (req, res)=>{
-    try{
-        const loggedInUserId =req.user._id;
-        const fillteredusers = await User.find({_id: {$ne: loggedInUserId}, role:'doctor'}).select("-password");   //fetch all user except for the one whivh has same as the person and select all info excep password.
+export const getUsersForSidebar = async (req, res) => {
+    try {
+      const loggedInUserId = req.user._id;
+  
+      const currentUser = await User.findById(loggedInUserId);
+      if (!currentUser) {
+        return res.status(404).json({ message: "Logged-in user not found" });
+      }
+  
+      const oppositeRole = currentUser.role === 'doctor' ? 'user' : 'doctor';
+  
+      const fillteredusers = await User.find({
+        _id: { $ne: loggedInUserId },
+        role: oppositeRole,
+      }).select("-password");
 
-        res.status(200).json(fillteredusers);
-
-    }catch (error){
-
-        console.error("Error in getusersforSidebar:", error.message);
-        return res.status(500).json({ message: "Internal Server Error" });
+      console.log("Filtered users for sidebar:", fillteredusers);
+      res.status(200).json(fillteredusers);
+    } catch (error) {
+      console.error("Error in getUsersForSidebar:", error.message);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-};
+  };
+  
 
 export const getMessages =async (req,res) =>{
     try{

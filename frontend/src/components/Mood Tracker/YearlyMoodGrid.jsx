@@ -59,12 +59,12 @@ const YearlyMoodGrid = ({ reload }) => {
     }, {});
 
     return (
-        <>
-        <h2>Yearly Mood</h2>
+        <div className="w-fit p-1">
+        <h2 className="text-2xl font-semibold">Yearly Mood</h2>
         <div
             style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(53, 20px)", // Adjusted the size of the boxes
+                gridTemplateColumns: "repeat(57, 20px)", // Adjusted the size of the boxes
                 gridGap: "2px",
                 padding: "10px",
                 backgroundColor: "#F5F5F5",
@@ -102,7 +102,7 @@ const YearlyMoodGrid = ({ reload }) => {
                 );
             })}
         </div>
-        </>
+        </div>
     );
 };
 

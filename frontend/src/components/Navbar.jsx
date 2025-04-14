@@ -30,6 +30,14 @@ const Navbar = () => {
           <div className="flex items-center gap-2 ml-auto">
             {authUser && (
               <>
+                {
+                  authUser.role === "doctor" && (
+                    <Link to="/" className="btn btn-sm gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      <span className="hidden sm:inline">Chat</span>
+                    </Link>
+                  )
+                }
                 <Link to="/settings" className="btn btn-sm gap-2">
                   <Settings className="w-4 h-4" />
                   <span className="hidden sm:inline">Settings</span>
