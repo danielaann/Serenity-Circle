@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const SleepSchema = new mongoose.Schema({
     userId: {

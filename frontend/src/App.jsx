@@ -31,6 +31,7 @@ import DocSignUpPage from "./components/Doctors/DocSignup";
 import WelcomePage from "./pages/WelcomePage";
 import ProfilePage from "./pages/ProfilePage";
 import GroupChat from "./pages/GroupMsg";
+import SleepTracker from "./pages/Sleep";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -86,6 +87,7 @@ const App = () => {
                 />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/grpchat" element={<GroupChat />} />
+                <Route path="/sleep" element={<SleepTracker />} />
               </>
             ) : (
               <>

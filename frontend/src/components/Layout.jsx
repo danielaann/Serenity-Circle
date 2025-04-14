@@ -12,6 +12,7 @@ const Layout = ({ children }) => {
     { name: 'Book Doctors', link: '/doctors'},
     { name: 'Chat with Doctors', link: '/' },
     { name: 'Connect with peers', link: '/grpchat' },
+    { name: 'Sleep Dashboard', link: '/sleep' },
 
   ];
 
@@ -19,7 +20,6 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex h-screen">
-      {/* ✅ Show Drawer only if user exists AND role is 'user' */}
       {authUser?.role === "user" && (
         <Drawer title="Serenity Circle" menuItems={menuItems} />
       )}
