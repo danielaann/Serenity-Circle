@@ -40,7 +40,7 @@ function ShowNotes() {
 
   const closeModal = () => {
     console.log("Closing modal in parent component");
-    setOpenAddEditModal((prev) => ({ ...prev, isShown: false })); // Ensure re-render
+    setOpenAddEditModal((prev) => ({ ...prev, isShown: false }));
   };
 
   const handleClearSearch = () => {
@@ -48,12 +48,10 @@ function ShowNotes() {
     getAllNotes();
   }
 
-  // Function to handle note edit
   const handleEdit = (noteDetails) => {
     setOpenAddEditModal({ isShown: true, data: noteDetails, type: "edit" });
   };
 
-  // Function to fetch all notes
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/notes/get-all-notes");
@@ -65,7 +63,6 @@ function ShowNotes() {
     }
   };
 
-  // Function to delete note
   const deleteNote = async (data) => {
     const noteId = data._id;
     try {
@@ -79,11 +76,9 @@ function ShowNotes() {
       }
     } catch (error) {
       console.error("API call failed:", error);
-      setError(error.response?.data?.message || "An error occurred. Please try again.");
     }
   };
 
-  //Function to Search Note
   const onSearchNote = async (query) => {
     try {
       const response = await axiosInstance.get("/notes/search-note", {
@@ -97,57 +92,107 @@ function ShowNotes() {
         console.log("No note data received");
       }
     } catch (error) {
-
+      console.error("Search failed:", error);
     }
   };
 
   const updateIsPinned = async (noteData) => {
     const noteId = noteData._id;
 
-  // Optimistic UI update
-  setAllNotes((prevNotes) =>
-    prevNotes.map((note) =>
-      note._id === noteId ? { ...note, isPinned: !note.isPinned } : note
-    )
-  );
-
-  //Pin-notes API call
-  try {
-    const response = await axiosInstance.put(`/notes/update-note-pinned/${noteId}`, {
-      isPinned: !noteData.isPinned,
-    });
-
-    if (response.data && response.data.note) {
-      showToastMessage("Note Updated Successfully", "update");
-      await getAllNotes(); 
-    } else {
-      console.log("No note data received");
-    }
-  } catch (error) {
-    console.error("Note Pin failed:", error);
-    showToastMessage("Failed to update note", "error");
-
-    // Rollback UI change if API call fails
     setAllNotes((prevNotes) =>
       prevNotes.map((note) =>
-        note._id === noteId ? { ...note, isPinned: noteData.isPinned } : note
+        note._id === noteId ? { ...note, isPinned: !note.isPinned } : note
       )
     );
-  }
-  }
 
-  // Fetch notes on component mount & when modal closes
+    try {
+      const response = await axiosInstance.put(`/notes/update-note-pinned/${noteId}`, {
+        isPinned: !noteData.isPinned,
+      });
+
+      if (response.data && response.data.note) {
+        showToastMessage("Note Updated Successfully", "update");
+        await getAllNotes();
+      } else {
+        console.log("No note data received");
+      }
+    } catch (error) {
+      console.error("Note Pin failed:", error);
+      showToastMessage("Failed to update note", "error");
+
+      setAllNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note._id === noteId ? { ...note, isPinned: noteData.isPinned } : note
+        )
+      );
+    }
+  };
+
   useEffect(() => {
     getAllNotes();
-  }, [openAddEditModal.isShown]); // Ensures data updates after modal closes
+  }, [openAddEditModal.isShown]);
+
+  // Guided Journal Prompts
+  const guidedPrompts = {
+    morning: {
+      title: "Morning Reflection",
+      prompts: [
+        "What are you looking forward to today?",
+        "How do you want to feel by the end of the day?",
+        "What is one intention you want to set for yourself today?"
+      ]
+    },
+    night: {
+      title: "Evening Reflection",
+      prompts: [
+        "What went well today?",
+        "What challenged you today?",
+        "What is something you're grateful for?"
+      ]
+    }
+  };
+
+  const startGuidedJournal = (timeOfDay) => {
+    const selected = guidedPrompts[timeOfDay];
+    const combinedContent = selected.prompts.map((q, i) => `${i + 1}. ${q}\n\n`).join("");
+
+    setOpenAddEditModal({
+      isShown: true,
+      type: "add",
+      data: {
+        title: selected.title,
+        content: combinedContent,
+        tags: ["guided", timeOfDay]
+      }
+    });
+  };
 
   return (
     <>
       <TopNav onSearchNote={onSearchNote} handleClearSearch={handleClearSearch} />
 
-      <div className="container mx-auto">
+      <div className="container mx-auto w-[85%]">
+      <div className="flex justify-between items-center w-[85%] mt-6">
+        <h2 className="text-2xl font-semibold text-gray-800">Your Notes:</h2>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => startGuidedJournal("morning")}
+            className="px-4 py-2 bg-yellow-200 hover:bg-yellow-400 rounded-lg text-sm font-semibold"
+          >
+            ☀️ Morning Journal
+          </button>
+          <button
+            onClick={() => startGuidedJournal("night")}
+            className="px-4 py-2 bg-blue-300 hover:bg-blue-500 rounded-lg text-sm font-semibold"
+          >
+            🌙 Night Journal
+          </button>
+        </div>
+      </div>
+
         {allNotes.length > 0 ? (
-          <div className="grid grid-cols-3 gap-4 mt-8 w-[85%]">
+          <div className="grid grid-cols-3 gap-4 mt-4 w-[85%]">
             {allNotes.map((item) => (
               <NoteCard
                 key={item._id}
@@ -158,7 +203,7 @@ function ShowNotes() {
                 isPinned={item.isPinned}
                 onEdit={() => handleEdit(item)}
                 onDelete={() => deleteNote(item)}
-                onPinNote={() =>updateIsPinned(item)}
+                onPinNote={() => updateIsPinned(item)}
               />
             ))}
           </div>
