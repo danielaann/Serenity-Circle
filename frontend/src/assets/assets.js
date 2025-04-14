@@ -107,7 +107,6 @@ import songm1 from './Meditation/songm1.mp3';
 import songm2 from './Meditation/songm2.mp3';
 import songm3 from './Meditation/songm3.mp3';
 import songm4 from './Meditation/songm4.mp3';
-import songm5 from './Meditation/songm5.mp3';
 import songm6 from './Meditation/songm6.mp3';
 import songm7 from './Meditation/songm7.mp3';
 
@@ -429,7 +428,7 @@ export const meditationSongsData = [
         id:4,
         name: "Song Five",
         image: imgm5,
-        file:songm5,
+        file:songm7,
         desc:"Fall asleep with this guided meditation",
         duration:"3:10"
     },
