@@ -17,7 +17,7 @@ export const getUsersForSidebar = async (req, res) => {
         role: oppositeRole,
       }).select("-password");
 
-      console.log("Filtered users for sidebar:", fillteredusers);
+      // console.log("Filtered users for sidebar:", fillteredusers);
       res.status(200).json(fillteredusers);
     } catch (error) {
       console.error("Error in getUsersForSidebar:", error.message);

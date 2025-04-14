@@ -30,6 +30,7 @@ import DoctorDashboard from "./components/Doctors/DoctorDashboard";
 import DocSignUpPage from "./components/Doctors/DocSignup";
 import WelcomePage from "./pages/WelcomePage";
 import ProfilePage from "./pages/ProfilePage";
+import GroupChat from "./pages/GroupMsg";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -84,6 +85,7 @@ const App = () => {
                   element={<Appointment />}
                 />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/grpchat" element={<GroupChat />} />
               </>
             ) : (
               <>

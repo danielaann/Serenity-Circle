@@ -11,6 +11,8 @@ const Layout = ({ children }) => {
     { name: 'Task Manager', link: '/tasks'},
     { name: 'Book Doctors', link: '/doctors'},
     { name: 'Chat with Doctors', link: '/' },
+    { name: 'Connect with peers', link: '/grpchat' },
+
   ];
 
   const { authUser } = useAuthStore();
