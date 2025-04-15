@@ -24,7 +24,6 @@ import Overdue from "./components/Task/Overdue";
 import Doctors from "./pages/Doctors";
 import Appointment from "./components/Doctors/Appointment";
 import Contact from "./pages/Contact";
-import DoctorSignup from "./components/Doctors/DoctorSignup";
 import DoctorLogin from "./components/Doctors/DacotorLogin";
 import DoctorDashboard from "./components/Doctors/DoctorDashboard";
 import DocSignUpPage from "./components/Doctors/DocSignup";
@@ -33,6 +32,7 @@ import ProfilePage from "./pages/ProfilePage";
 import GroupChat from "./pages/GroupMsg";
 import SleepTracker from "./pages/Sleep";
 import BookedAppointments from "./pages/BookedAppointments";
+import DoctorAppointmentDashboard from "./components/Doctors/DocAppointments";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -96,12 +96,12 @@ const App = () => {
                 {/* Doctor-Specific Routes */}
                 <Route path="/welcome" element={<WelcomePage/>}/>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/doctor/signup" element={<DoctorSignup />} />
                 <Route path="/doctor/login" element={<DoctorLogin />} />
                 <Route
                   path="/doctor/dashboard"
                   element={<DoctorDashboard />}
                 />
+                 <Route path="/doctor/appointments" element={<DoctorAppointmentDashboard />} />
               </>
             )
           ) : (

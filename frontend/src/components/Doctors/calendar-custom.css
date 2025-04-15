@@ -1,0 +1,14 @@
+/* Highlight days with appointments */
+.highlight-appointment {
+    background: #93c5fd !important;
+    border-radius: 50% !important;
+    color: white !important;
+  }
+  
+  /* Highlight today in green */
+  .highlight-today {
+    background: #34d399 !important;
+    border-radius: 50% !important;
+    color: white !important;
+  }
+  
