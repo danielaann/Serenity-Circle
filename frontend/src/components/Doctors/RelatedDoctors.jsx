@@ -15,7 +15,7 @@ const RelatedDoctors = ({docId,speciality}) => {
     }, [doctors, speciality, docId])
 
     return (
-        <div className='flex flex-col w-[60%] items-center mx-2 gap-4 my-16 text-gray-900'>
+        <div className='flex flex-col w-[90%] items-center mx-2 gap-4 my-16 text-gray-900'>
             <h1 className='text-3xl font-medium text-center'>Top Doctors to Book</h1>
             <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors</p>
             <div className=' w-[60%] max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-5'>

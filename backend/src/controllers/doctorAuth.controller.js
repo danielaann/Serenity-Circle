@@ -84,8 +84,8 @@ export const getDoctorProfile = async (req, res) => {
 // Get All Doctors
 export const getAllDoctors = async (req, res) => {
     try {
-        const doctors = await DoctorModel.find().populate('_id', 'name'); // Populate the `name` field from the `User` model
-        console.log(doctors);
+        const doctors = await DoctorModel.find() // Populate the `name` field from the `User` model
+        console.log("This bitch",doctors);
         res.status(200).json(doctors);
     } catch (error) {
         console.error("Error fetching doctors:", error);
