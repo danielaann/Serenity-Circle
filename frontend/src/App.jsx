@@ -32,6 +32,7 @@ import WelcomePage from "./pages/WelcomePage";
 import ProfilePage from "./pages/ProfilePage";
 import GroupChat from "./pages/GroupMsg";
 import SleepTracker from "./pages/Sleep";
+import BookedAppointments from "./pages/BookedAppointments";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -81,6 +82,7 @@ const App = () => {
                 <Route path="/notes" element={<ShowNotes />} />
                 <Route path="/tasks/*" element={<TaskPage />} />
                 <Route path="/doctors" element={<Doctors />} />
+                <Route path="/appointments/:userId" element={<BookedAppointments />} />
                 <Route
                   path="/appointment/:docId"
                   element={<Appointment />}

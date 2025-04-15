@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { assets, doctors } from "../../assets_doc/assets_frontend/assets.js";
 import RelatedDoctors from './RelatedDoctors.jsx';
 import { axiosInstance } from '../../lib/axios.js';
@@ -183,9 +183,17 @@ const Appointment = () => {
                                 </p>
                             ))}
                     </div>
-                    <button className='bg-primary text-sm font-light px-14 py-3 rounded-full my-6' onClick={bookApointment}>
+                    <button className='bg-primary text-sm font-light px-14 py-3 rounded-full my-6 mx-2' onClick={bookApointment}>
                         Book an Appointment
                     </button>
+                    
+                    <Link
+                    to={`/appointments/${authUser._id}`}
+                    className="inline-block bg-primary text-sm font-light px-14 py-3 rounded-full my-6"
+                    >
+                    View My Appointments
+                    </Link>
+
                 </div>
             </div>
 

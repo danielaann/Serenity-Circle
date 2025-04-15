@@ -56,8 +56,6 @@ export const registerOrUpdateDoctor = async (req, res) => {
     }
 };
 
-
-
 // Get Doctor Profile
 export const getDoctorProfile = async (req, res) => {
     try {

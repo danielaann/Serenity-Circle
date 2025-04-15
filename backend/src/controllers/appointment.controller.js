@@ -29,7 +29,8 @@ export const bookAppointment = async (req, res) => {
       // Add the new slotTime to the slotsBooked array for the specific slotDate
       doctor.slotsBooked[slotDate].push(slotTime);
       await doctor.save();  // Save the updated doctor document
-  
+      console.log("Updated slotsBooked:", doctor.slotsBooked);
+      
       // Create the appointment
       const appointment = new appointmentModel({
         userId,
@@ -64,6 +65,46 @@ export const bookAppointment = async (req, res) => {
     }
   };
   
+export const getUserAppointments = async (req, res) => {
+    const { userId } = req.params;
   
+    try {
+      const appointments = await appointmentModel.find({ userId });
+  
+      const currentDateTime = new Date();
+  
+      const upcoming = [];
+      const past = [];
+  
+      appointments.forEach((appointment) => {
+        const [hours, minutes] = appointment.slotTime.split(':').map(Number);
+        const appointmentDateTime = new Date(`${appointment.slotDate}T${appointment.slotTime}`);
+  
+        if (appointmentDateTime > currentDateTime) {
+          upcoming.push(appointment);
+        } else {
+          past.push(appointment);
+        }
+      });
+  
+      // Sort upcoming by nearest date/time
+      upcoming.sort((a, b) => new Date(`${a.slotDate}T${a.slotTime}`) - new Date(`${b.slotDate}T${b.slotTime}`));
+  
+      // Sort past by most recent date/time
+      past.sort((a, b) => new Date(`${b.slotDate}T${b.slotTime}`) - new Date(`${a.slotDate}T${a.slotTime}`));
+      
+      console.log("Upcoming appointments:", upcoming);
+      console.log("Past appointments:", past);
+      return res.status(200).json({
+        success: true,
+        upcoming,
+        past
+      });
+  
+    } catch (err) {
+      console.error("Fetch appointments error:", err);
+      return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  };
   
   

@@ -4,19 +4,20 @@ import Drawer from './Drawer';
 import { useAuthStore } from '../store/useAuthStore';
 
 const Layout = ({ children }) => {
+  const { authUser } = useAuthStore();
+
   const menuItems = [
     { name: 'Mood Dashboard', link: '/dashboard' },
+    { name: 'Sleep Dashboard', link: '/sleep' },
     { name: 'Relaxation', link: '/relaxation'},
     { name: 'Journal', link: '/notes'},
     { name: 'Task Manager', link: '/tasks'},
     { name: 'Book Doctors', link: '/doctors'},
+    ...(authUser?._id ? [{ name: 'My Appointments', link: `/appointments/${authUser._id}` }] : []),
     { name: 'Chat with Doctors', link: '/' },
     { name: 'Connect with peers', link: '/grpchat' },
-    { name: 'Sleep Dashboard', link: '/sleep' },
-
   ];
 
-  const { authUser } = useAuthStore();
 
   return (
     <div className="flex h-screen">
